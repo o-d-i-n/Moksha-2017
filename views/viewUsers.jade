@@ -16,8 +16,8 @@ block content
                     if err
                         h5.red-text= err
                     .input-field.col.s12
-                        input(type='text', id="inno_ids" name="inno_ids" required=true)
-                        label(for="inno_ids") Enter INNO IDs(comma separated)
+                        input(type='text', id="moksha_ids" name="moksha_ids" required=true)
+                        label(for="moksha_ids") Enter INNO IDs(comma separated)
                     button.btn.waves-effect.waves-light(type="submit") Add Participants
         .row
             .col
@@ -39,18 +39,18 @@ block content
                         each p, index in participants
                             tr
                                 td= index + 1
-                                td= p.inno_id
+                                td= p.moksha_id
                                 td= p.firstName + ' ' + p.lastName
                                 td= p.college + ', ' + p.course
                                 td= p.email
                                 td= p.phone_no
                                 if p.photoId
                                     td
-                                        a(href="/users/userInfo/" + p.inno_id target="_blank")
+                                        a(href="/users/userInfo/" + p.moksha_id target="_blank")
                                             | &#10004
                                 else
                                     td 
-                                        a(href="/users/photoUpload/" + p.inno_id) &#10060
+                                        a(href="/users/photoUpload/" + p.moksha_id) &#10060
 block style
     style
         include ../public/stylesheets/pages/about.css

@@ -3,12 +3,22 @@ var Event = require('../models/event');
 var Account = require('../models/account');
 var Team = require('../models/team');
 var nodemailer  = require('nodemailer');
-var mailgun = require('nodemailer-mailgun-transport');
 var config = require('config');
 var webPush = require('web-push');
 
 var auth = config.get('mailgun');
-var mgMailer = nodemailer.createTransport(mailgun(auth));
+
+poolConfig = {
+    pool: true,
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // use TLS
+    auth: {
+        user: config.get('nEmail'),
+        pass: config.get('nPass')
+    }
+};
+var nMailer = nodemailer.createTransport(poolConfig);
 
 var users = {
     setLoginStatus: function(req, res, next) {
@@ -84,7 +94,7 @@ var users = {
             if(req.user.is_admin)
                 return next();
             else
-                res.render("error", {message: "You don't have permissions to view this", error: {}});
+                res.render("error", {msg: "You don't have permissions to view this", error: {}});
         } else {
             res.redirect('/login');
         }
@@ -94,30 +104,30 @@ var users = {
             if(req.user.is_em || req.user.is_admin)
                 return next();
             else
-                res.render("error", {message: "You don't have permissions to view this", error:{}});
+                res.json({msg: "You don't have permissions to view this", error:{}});
         } else {
-            res.redirect('/login');
+            res.json({msg: "Logged out"});
         }
     },
-    sendMail: function(to,subject,text,html,inno_id,setsuc){
+    sendMail: function(to,subject,text,html,moksha_id,setsuc){
         var mailOpts;
         console.log('sending mail to ' + to);
 
         mailOpts = {
-            from: 'hello@innovisionnsit.in', //grab form data from the request body object
+            from: config.get('contactEmail'), //grab form data from the request body object
             to: to,
             subject: subject,
             text: text,
             html:html
         };
 
-        mgMailer.sendMail(mailOpts, function(err, response) {
+        nMailer.sendMail(mailOpts, function(err, response) {
             if (err) {
                 console.log('ERROR MAIL : ' + to);
-                setsuc(true, inno_id);
+                setsuc(true, moksha_id);
             } else {
                 console.log('MAIL Sent : ' + to);
-                setsuc(false, inno_id);
+                setsuc(false, moksha_id);
             }
         })
     },

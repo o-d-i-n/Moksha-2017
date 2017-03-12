@@ -4,28 +4,29 @@ var passportLocalMongoose = require('passport-local-mongoose');
 var mongoosePaginate = require('mongoose-paginate');
 var validate = require('mongoose-validator');
 var autoIncrement = require('mongoose-auto-increment');
+var config = require('config');
 
-var connection = mongoose.createConnection('mongodb://127.0.0.1:27017/innovision');
+var connection = mongoose.createConnection('mongodb://' + config.get('dbhost') + '/moksha');
 autoIncrement.initialize(connection);
 
 var nameValidator = [
     validate({
         validator: 'isLength',
         arguments: [3, 50],
-        message: 'Name should be between 3 and 50 characters'
+        msg: 'Name should be between 3 and 50 characters'
     })
 ];
 var emailValidator=[
     validate({
         validator: 'isEmail',
-        message: "not a valid email"
+        msg: "not a valid email"
     })
 ];
 var phoneValidator = [
     validate({
         validator: 'isLength',
         arguments: [10, 10],
-        message: 'phonenumber should be 10 digits'
+        msg: 'phonenumber should be 10 digits'
     })
 ];
 
@@ -34,7 +35,7 @@ var Account = new Schema({
     provider: String,
     providerData: Object,
     accessToken: String,
-    inno_id: {type:String, unique:true, dropDups:true, sparse:true},
+    moksha_id: {type:String, unique:true, dropDups:true, sparse:true},
     password: String,
     email: {type:String, validator:emailValidator, unique:true, dropDups:true, sparse:true, trim: true},
     firstName: String,

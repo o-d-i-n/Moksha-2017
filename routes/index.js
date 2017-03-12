@@ -6,15 +6,23 @@ var Event = require('../models/event');
 var router = express.Router();
 var Hashids = require("hashids");
 var nodemailer = require('nodemailer');
-var mailgun = require('nodemailer-mailgun-transport');
 var userLogic = require('../logic/userLogic.js');
 var config = require('config');
 var async = require("async");
 
-var auth = config.get('mailgun');
-
 var hashids = new Hashids(config.get('hashids').secret, config.get('hashids').no_chars, config.get('hashids').chars);
-var mgMailer = nodemailer.createTransport(mailgun(auth));
+
+poolConfig = {
+    pool: true,
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // use TLS
+    auth: {
+        user: config.get('nEmail'),
+        pass: config.get('nPass')
+    }
+};
+var nMailer = nodemailer.createTransport(poolConfig);
 
 router.get('/', function (req, res) {
     res.render('index', {user: req.user});
@@ -24,29 +32,26 @@ router.get('/register', function (req, res) {
     res.render('register', {});
 });
 
-
 router.post('/register', function (req, res) {
 
-    inno_id = '';
-    Account.register(new Account({email: req.body.email,endpoint:req.body.endpoint}), req.body.password, function (err, account) {
+    moksha_id = '';
+    Account.register(new Account({email: req.body.email, endpoint:req.body.endpoint}), req.body.password, function (err, account) {
         if (err) {
-            return res.render('error', {message: err.message, error: err});
+            return res.json({msg: err.msg, error: err});
         }
         passport.authenticate('local')(req, res, function () {
-            account.inno_id = 'I' + hashids.encode(account.accNo);
-            inno_id = account.inno_id;
+            account.moksha_id = 'M' + hashids.encode(account.accNo);
+            moksha_id = account.moksha_id;
             account.save(function (err) {
                 if(err)
                     console.log(err);
                 else {
-                    //userLogic.sendMail("User",req.body.email,"Congratulations you have registered, your Inno ID is: " + inno_id);
-                    res.redirect('/users/details');
+                    res.json({msg: 'success', moksha_id: account.moksha_id});
                 }
             });
         });
     });
 });
-
 
 
 router.get('/login/fb', passport.authenticate('facebook', {authType: 'rerequest', scope: ['email']}));
@@ -56,7 +61,7 @@ router.get('/login/fb/callback',
         failureRedirect: '/login'
     }), function(req, res) {
         if (req.user.is_new) {
-            res.redirect('/users/details');
+            res.json({is_new: true, });
         } else {
             res.redirect('/');
         }
@@ -73,22 +78,12 @@ router.get('/login', function (req, res) {
 });
 
 router.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), function (req, res) {
-
-    console.log(req);
-
-    if(req.user.endpoint == '') {
-        req.user.endpoint = req.body.endpoint;
-
-    }
-
-    if (req.user.is_new)
-        res.redirect('/users/details');
-    res.redirect('/');
+    res.json({msg:'success', user :req.user});
 });
 
 router.get('/logout', function (req, res) {
     req.logout();
-    res.redirect('/');
+    res.json({msg : 'success'});
 });
 
 router.get('/contact', function(req, res) {
@@ -105,19 +100,19 @@ router.post('/contact', function(req, res) {
     mailOpts = {
         from: req.body.name + ' <' + req.body.email + '>', //grab form data from the request body object
         to: config.get('contactEmail'),
-        subject: 'Inno Website Contact Form: ' + req.body.subject,
+        subject: 'Moksha Website Contact Form: ' + req.body.subject,
         text: req.body.mail
     };
 
-    mgMailer.sendMail(mailOpts, function(err, response) {
+    nMailer.sendMail(mailOpts, function(err, response) {
         var user = {};
         if (req.isAuthenticated()) {
             user = req.user;
         }
         if (err) {
-            res.render('contactUs', { msg: 'Error occured, message not sent.', err: true, user: user});
+            res.json({ msg: 'Error occured, Message not sent.', err: err, user: user});
         } else {
-            res.render('contactUs', { msg: 'Message Sent! Thank You.', err: false, user: {}});
+            res.json({ msg: 'Message Sent! Thank You.', err: false, user: {}});
         }
     })
 });

@@ -8,8 +8,8 @@ block content
         h3.intro New Team
         if error
             h5.red-text= error
-        if message
-            h5.blue-text= message
+        if msg
+            h5.blue-text= msg
         .row
             form.col.s12(role='form', action="/teams/newTeam", method="post")
                 .row
@@ -28,7 +28,7 @@ block content
                         label How many members?
                 .row
                     .input-field.col.s8.m7
-                        input.grey-text#captain(disabled type="text" name="captain" value=inno_id)
+                        input.grey-text#captain(disabled type="text" name="captain" value=moksha_id)
                         label.grey-text(for="captain") Captain INNO ID
                     #m2.input-field.col.s8.m7.hidden
                         input#mem2(type="text" name="mem2")

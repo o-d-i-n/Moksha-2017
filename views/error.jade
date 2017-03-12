@@ -10,7 +10,7 @@ block content
             h4 The page you were looking for is lost in time.
         else
             h4.intro= error.status
-            h5= message
+            h5= msg
         if is_admin
             pre #{error.stack}
 

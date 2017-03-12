@@ -15,13 +15,13 @@ var upload = multer({
 
 router.get('/', function (req, res) {
     Event.find({}).lean().exec(function (err, events) {
-        res.render('eventList', {events: events});
+        res.json({events: events});
     });
 });
 
 router.get('/category/:category', function (req, res) {
     Event.find({category: req.params.category}).lean().exec(function (err, events) {
-        res.render('eventList', {events: events, category: req.params.category});
+        res.json({events: events, category: req.params.category});
     });
 });
 
@@ -50,17 +50,23 @@ router.post('/addEvent', userLogic.isEM, upload.single('eventPhoto'), function(r
         minParticipants: req.body.minParticipants,
         managers: [req.user._id],
         category: req.body.category,
-        photo: '/uploads/' + req.file.filename,
         isTeamEvent: req.body.isTeamEvent == 1,
         contact: req.body.contact,
         venue: req.body.venue,
         timings: req.body.timings
     });
+
+    console.log(req.file);
+    if (req.file)
+        event.photo = '/uploads/' + req.file.filename;
+
     event.save(function (err, event) {
         if(err) {
             console.log(err);
+            res.json({msg: 'failure'});
         }
-        res.redirect(event.linkName);
+        else
+            res.json({event: event.linkName, msg: 'success'});
     });
 });
 
@@ -68,19 +74,11 @@ router.get('/:eventLink', userLogic.getTeams, eventLogic.isRegistered, function 
     Event.findOne({linkName: req.params.eventLink},
         function (err, event) {
             if(!event || err ) {
-                res.render('error', {message: "Event not found!" + req.params.eventLink, error: {status: '', stack: ''}});
+                res.json({msg: "Event not found! " + req.params.eventLink, error: {status: '', stack: ''}});
             }
             else {
-                console.log('inside event link'+res.locals.teams);
-                //TODO: Next and previous events
-                //Event(event).next(function (nxtEvent) {
-                //    event.nxtEvent = nxtEvent.linkName;
-                //    console.log(nxtEvent);
-                //}).previous(function (prevEvent) {
-                //    event.prevEvent = prevEvent.linkName;
-                //    console.log(prevEvent);
-                //});
-                res.render('event', {event: event});
+                console.log('inside event link' + res.locals.teams);
+                res.json({event: event});
             }
         });
 });
@@ -93,7 +91,7 @@ router.post('/:eventLink/register/', userLogic.ensureAuthenticated, function (re
     Event.findOne({linkName: elink}, function(err, event) {
 
         if (!event || err){
-            res.render('error', {message: "Event not found", error: {status: '', stack: ''}});
+            res.render('error', {msg: "Event not found", error: {status: '', stack: ''}});
         }
 
         // team event
@@ -101,7 +99,7 @@ router.post('/:eventLink/register/', userLogic.ensureAuthenticated, function (re
             var teamName = req.body.teamName;
             Team.findOne({name: teamName}, function(err, team){
                 if(!team || err)
-                    res.render('error', {message: "Error", error: {status: '', stack: ''}});
+                    res.json({msg: "Error", error: err});
                 else {
                     console.log(team);
                     event.participants.push(team._id);
@@ -118,9 +116,12 @@ router.post('/:eventLink/register/', userLogic.ensureAuthenticated, function (re
         else {
             event.participants.push(id);
             event.save(function (err, event) {
-                if(err)
+                if(err) {
                     console.log(err);
-                res.redirect('/events/' + event.linkName);
+                    res.json({error: err, msg: 'failure'});
+                }
+                else
+                    res.json({msg: 'success'});
             });
         }
     });
@@ -128,15 +129,15 @@ router.post('/:eventLink/register/', userLogic.ensureAuthenticated, function (re
 
 router.post('/:eventLink/register-i', function (req, res){
     var elink=req.params.eventLink;
-    var array = req.body.inno_ids.split(',');
+    var array = req.body.moksha_ids.split(',');
     for(var i = 0; i < array.length; i++) {
         Event.findOne({linkName: elink}, function (err, event) {
             if (!event || err) {
-                res.render('error', {message: "Event not found", error: {status: '', stack: ''}});
+                res.json({msg: "Event not found", error: {status: '', stack: ''}});
             }
             //non team event
             else {
-                Account.find({inno_id: {$in: array}}).lean().exec(function(err, users) {
+                Account.find({moksha_id: {$in: array}}).lean().exec(function(err, users) {
                     var ids = [];
                     for (var i in users) {
                         ids.push(users[i]._id);
@@ -145,9 +146,9 @@ router.post('/:eventLink/register-i', function (req, res){
                     event.save(function (err, event) {
                         if (err) {
                             console.log(err);
-                            res.redirect('/events/' + event.linkName + '/participants/error');
+                            res.json({error : err, msg: 'failure'});
                         }
-                        res.redirect('/events/' + event.linkName + '/participants/success');
+                        res.json({msg : 'success'});
                     });
 
                 });
@@ -193,7 +194,7 @@ router.post('/:eventLink/register-t', function (req, res){
             var tname = req.body.name;
             var mem = [];
 
-            Account.find({inno_id:{ $in: inno }},function(err, users) {
+            Account.find({moksha_id:{ $in: inno }},function(err, users) {
                 console.log("in");
                 if (err) {
                     console.log(err);
@@ -236,7 +237,7 @@ router.get('/:eventLink/edit', userLogic.isEM, function (req, res) {
         else {//if (event.managers.indexOf(req.user._id) > -1 || req.user.is_admin) {
             res.render('addEvent', {event: event, edit: true});
         //} else {
-        //    res.render('error', {message:"You don't have permission to view this", error: {status:"", stack:""}});
+        //    res.render('error', {msg:"You don't have permission to view this", error: {status:"", stack:""}});
         // TODO: Add condition so that only a set of em are able to edit an event
         }
     })
@@ -247,7 +248,7 @@ router.post('/:eventLink/edit', userLogic.isEM, upload.single('eventPhoto'),
         Event.findOne({linkName: req.params.eventLink}, function (err, event) {
             if (err)
                 console.log(err);
-            else {//if (event.managers.indexOf(req.user._id) > -1 || req.user.is_admin) {
+            else {
                 var linkName = req.body.name;
                 linkName = linkName.replace(/\s+/g, '-').toLowerCase();
 
@@ -273,10 +274,8 @@ router.post('/:eventLink/edit', userLogic.isEM, upload.single('eventPhoto'),
                 if (req.file)
                     event.photo = '/uploads/' + req.file.filename;
                 event.save(function() {
-                    res.redirect('/events/' + linkName);
+                    res.json({msg: 'success', event: event});
                 });
-            //} else {
-            //    res.render('error', {message: "You don't have permission to view this", error: {status: "", stack: ""}});
             }
         })
 });
@@ -286,7 +285,7 @@ router.get('/:eventLink/participants', userLogic.isEM, function (req, res) {
     Event.findOne({linkName: req.params.eventLink},
         function (err, event) {
             if(!event || err ) {
-                res.render('error', {message: "Event not found!", error: {status: 404, stack: ''}});
+                res.render('error', {msg: "Event not found!", error: {status: 404, stack: ''}});
             } else {
                 var list = event.participants;
                 if (!event.isTeamEvent) {
@@ -306,7 +305,7 @@ router.get('/:eventLink/participants/:err', userLogic.isEM, function (req, res) 
     Event.findOne({linkName: req.params.eventLink},
         function (err, event) {
             if(!event || err ) {
-                res.render('error', {message: "Event not found!", error: {status: 404, stack: ''}});
+                res.render('error', {msg: "Event not found!", error: {status: 404, stack: ''}});
             } else {
                 var list = event.participants;
                 if (!event.isTeamEvent) {
@@ -326,19 +325,19 @@ router.get('/:eventLink/participants.xls', userLogic.isEM, json2xls.middleware, 
     Event.findOne({linkName: req.params.eventLink},
         function (err, event) {
             if(!event || err ) {
-                res.render('error', {message: "Event not found!", error: {status: 404, stack: ''}});
+                res.render('error', {msg: "Event not found!", error: {status: 404, stack: ''}});
             } else {
                 var list = event.participants;
                 if (!event.isTeamEvent) {
                     Account.find({_id: {$in: list}}).lean().exec(function (err, users) {
-                        res.xls(event.linkName + '.xlsx', users, {fields: ['inno_id', 'firstName', 'lastName', 'email', 'phone_no', 'college', 'course']});
+                        res.xls(event.linkName + '.xlsx', users, {fields: ['moksha_id', 'firstName', 'lastName', 'email', 'phone_no', 'college', 'course']});
                     })
                 } else {
                     Team.find({_id: {$in: list}}).populate('members captain').lean().exec(function(err, teams) {
                         var out = [];
                         for (var i in teams) {
                            out.push({
-                               inno_id: "Team",
+                               moksha_id: "Team",
                                firstName: teams[i].name,
                                lastName: "",
                                email: "",
@@ -348,7 +347,7 @@ router.get('/:eventLink/participants.xls', userLogic.isEM, json2xls.middleware, 
                            });
                             out.push.apply(out, teams[i].members);
                         }
-                        res.xls(event.linkName + '.xlsx', out, {fields: ['inno_id', 'firstName', 'lastName', 'email', 'phone_no', 'college', 'course']});
+                        res.xls(event.linkName + '.xlsx', out, {fields: ['moksha_id', 'firstName', 'lastName', 'email', 'phone_no', 'college', 'course']});
                     })
                 }
             }

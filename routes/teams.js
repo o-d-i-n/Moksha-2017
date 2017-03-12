@@ -9,16 +9,16 @@ router.get('/myTeams', userLogic.ensureAuthenticated, function(req, res) {
 
     Team.find({members: req.user._id}).lean().exec(function(err, teams) {
         if(err)
-            res.render('error', {message:"Sorry! No teams found.", error: err});
+            res.json({msg:"Sorry! No teams found.", error: err});
         else
-            res.render('team', {teams: teams});
+            res.json('team', {teams: teams});
     })
 
 
 });
 
 router.get('/newTeam', userLogic.ensureAuthenticated, function(req, res) {
-    res.render('addTeam', {inno_id: req.user.inno_id});
+    res.render('addTeam', {moksha_id: req.user.moksha_id});
 });
 
 router.post('/newTeam', userLogic.ensureAuthenticated, function(req, res) {
@@ -50,7 +50,7 @@ router.post('/newTeam', userLogic.ensureAuthenticated, function(req, res) {
         var id6 = req.body.mem6.trim().toUpperCase();
         inno.push(id6);
     }
-    var id1 = req.user.inno_id;
+    var id1 = req.user.moksha_id;
     console.log(inno);
     var tname = req.body.name;
 
@@ -58,12 +58,12 @@ router.post('/newTeam', userLogic.ensureAuthenticated, function(req, res) {
 
     var mem = [];
 
-    Account.find({inno_id:{ $in: inno }},function(err, users) {
+    Account.find({moksha_id:{ $in: inno }},function(err, users) {
         console.log("in");
         if (err) {
             console.log(err);
             res.render('addTeam', {error: 'Some of the users were not found, please check the INNO IDs',
-                inno_id: req.user.inno_id});
+                moksha_id: req.user.moksha_id});
         } else if (users.length == inno.length) {
             mem.push(captain);
             for (var i=0; i < users.length; i++) {
@@ -81,16 +81,16 @@ router.post('/newTeam', userLogic.ensureAuthenticated, function(req, res) {
                 if(err) {
                     console.log(err);
                     res.render('addTeam',
-                        {error: 'Team name already exists', inno_id: req.user.inno_id});
+                        {error: 'Team name already exists', moksha_id: req.user.moksha_id});
                 } else {
                     res.render('addTeam',
-                        {message: 'Team ' + tname + ' added successfully. Please return to the event to complete the registration.',
-                            inno_id: req.user.inno_id});
+                        {msg: 'Team ' + tname + ' added successfully. Please return to the event to complete the registration.',
+                            moksha_id: req.user.moksha_id});
                 }
             });
         } else {
             res.render('addTeam',
-                {error: 'Some of the Inno IDs were incorrect, please try again.', inno_id: req.user.inno_id});
+                {error: 'Some of the Inno IDs were incorrect, please try again.', moksha_id: req.user.moksha_id});
         }
     });
 });
@@ -104,7 +104,7 @@ router.get('/:teamLink/edit', userLogic.isEM, function (req, res) {
         else {//if (event.managers.indexOf(req.user._id) > -1 || req.user.is_admin) {
             res.render('addTeam', {event: event, edit: true});
             //} else {
-            //    res.render('error', {message:"You don't have permission to view this", error: {status:"", stack:""}});
+            //    res.render('error', {msg:"You don't have permission to view this", error: {status:"", stack:""}});
             // TODO: Add condition so that only a set of em are able to edit an event
         }
     })
@@ -143,7 +143,7 @@ router.post('/:teamLink/edit', userLogic.isEM,
                     res.redirect('/events/' + linkName);
                 });
                 //} else {
-                //    res.render('error', {message: "You don't have permission to view this", error: {status: "", stack: ""}});
+                //    res.render('error', {msg: "You don't have permission to view this", error: {status: "", stack: ""}});
             }
         })
     });
@@ -151,5 +151,5 @@ router.post('/:teamLink/edit', userLogic.isEM,
 
 
 
-    
+
 module.exports = router;

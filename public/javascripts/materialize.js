@@ -1847,7 +1847,7 @@ $(document).ready(function(){
     }, false);
 
 })(window);
-;Materialize.toast = function (message, displayLength, className, completeCallback) {
+;Materialize.toast = function (msg, displayLength, className, completeCallback) {
     className = className || "";
 
     var container = document.getElementById('toast-container');
@@ -1861,10 +1861,10 @@ $(document).ready(function(){
     }
 
     // Select and append toast
-    var newToast = createToast(message);
+    var newToast = createToast(msg);
 
-    // only append toast if message is not undefined
-    if(message){
+    // only append toast if msg is not undefined
+    if(msg){
         container.appendChild(newToast);
     }
 

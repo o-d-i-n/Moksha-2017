@@ -1,4 +1,4 @@
-# Inno - A fest website
+# A fest website
 
 ## The site features the following functions :
   1. Login/Register using FB and Local
@@ -17,50 +17,50 @@ Should work on other versions too, but mongodb is not officially supported on 15
 
 ### nodejs
   Installation
-  
+
     curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
     sudo apt-get install -y nodejs
-  
+
   After Installation
-  
+
     sudo apt-get install nodejs-legacy
-    
+
   Check that you have node and npm(comes with node) successfully installed:
-    
+
     $ node -v
     $ npm -v
-    
+
 ### mongodb
   Installation :
   Follow the official instructions at:
     https://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/
-    
+
   Check mongo is installed by starting the server:
-      
+
       mongod
-    
+
 ### libkrb5-dev
   Required for mongoose (nodejs module)
-  
+
     sudo apt-get install libkrb5-dev
-    
+
 ### modules:
 
   Clone the project using git and cd into it:
-  
+
       git clone https://github.com/rohit-95/inno.git
-    
+
       cd inno
-    
+
   Run npm install - this installs all the dependencies of the project (found in package.json) :
-    
+
       npm install
-    
+
 ## Config File
-  
+
   Create a new directory with the name of 'config' in the root directory. Add a 'default.json' file in this directory. This file is used to store API keys and various other variable configurations like : site-url, contact-form-email, etc.
-  It needs to have the following format : 
-  
+  It needs to have the following format :
+
       {
         "mailgun": {
           "auth": {
@@ -83,17 +83,17 @@ Should work on other versions too, but mongodb is not officially supported on 15
           "callbackURL": "<site-url> + /login/fb/callback"
         }
       }
-    
+
 ## Run
 
   Start Mongo
-  
+
     mongod
-  
+
   Start App
-  
+
     npm start
-    
+
   Or wif you are using pm2
-    
+
     pm2 start pm2_debug.json

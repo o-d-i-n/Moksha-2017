@@ -95,7 +95,7 @@ passport.use(new FacebookStrategy({
                     });
                     user.save(function (err) {
                         if (err) console.log(err);
-                        user.inno_id = 'I' + hashids.encode(user.accNo);
+                        user.moksha_id = 'M' + hashids.encode(user.accNo);
                         user.save(function(err) {
                             return done(err, user);
                         });
@@ -132,7 +132,7 @@ if (app.get('env') === 'development') {
         res.status(err.status || 500);
         console.log("BC!!! Development wala chal raha hai!!!!" + err);
         res.render('error', {
-            message: err.message,
+            msg: err.msg,
             error: err
         });
     });
@@ -144,8 +144,8 @@ if (app.get('env') === 'development') {
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     console.log("BC!!! Ye PRODUCTION me error kisne push kia????" + err);
-    res.render('error', {
-        message: err.message,
+    res.json({
+        msg: err.msg,
         error: err
     });
 });
