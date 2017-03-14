@@ -12,6 +12,7 @@ var Event = new Schema({
     venue: String,
     photo: String,
     minParticipants: {type:Number, default:'1'},
+    maxParticipants: {type:Number, default:'1'},
     isTeamEvent: {type:Boolean,default:false},
     category: [String],
     managers: [{type: Schema.ObjectId, ref: 'Account'}],

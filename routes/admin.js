@@ -9,12 +9,6 @@ var async = require("async");
 
 var auth = config.get('mailgun');
 
-router.get('/emailBlast',userLogic.isAdmin,function(req,res){
-    Event.find({}, 'name linkName').lean().exec(function (err, events) {
-        res.render('emailBlast', {events: events});
-    });
-});
-
 router.post('/emailBlast', function(req,res,next) {
     req.template = "emails/" + req.body.type;
 

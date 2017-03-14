@@ -11,11 +11,6 @@ var upload = multer({
     limits: {fileSize: 10000000, files:1}
 });
 
-router.get('/details', userLogic.ensureAuthenticated, userLogic.getEvents, function (req, res) {
-    res.json({user: req.user, events: req.eventList});
-});
-
-
 router.post('/details', userLogic.ensureAuthenticated, function (req, res) {
     if (req.user)
     Account.findOne({_id: req.user._id},
@@ -43,10 +38,6 @@ router.post('/details', userLogic.ensureAuthenticated, function (req, res) {
         });
 });
 
-router.get('/addEM', userLogic.isEM, function (req, res) {
-    res.render('makeEM');
-});
-
 router.post('/addEM', userLogic.isEM, function(req, res) {
     var array = req.body.moksha_ids.split(',');
     for(var i = 0; i < array.length; i++) {
@@ -66,77 +57,14 @@ router.post('/addEM', userLogic.isEM, function(req, res) {
     }
 });
 
-
-router.get('/oh/my/god/userInfo',function(req,res) {
-    res.render('userInfo',{user:{}});
-});
-
-router.get('/userInfo', userLogic.isEM, function(req,res) {
-    res.render('userInfo',{user:{}, admin: true});
-});
-
-router.post('/oh/my/god/userInfo',function(req,res) {
-    if(req.body.moksha_id[0] == 'I') {
-        Account.findOne({moksha_id:req.body.moksha_id},function(err,user){
-
-            if(!err && user) {
-                res.render('userInfo', { msg: 'User Exists.', err:false, inno: true, user:user});
-            } else {
-                res.render('userInfo',{ msg: 'User Does Not Exist.', err:true});
-            }
-        });
-
-    } else {
-
-        http.get({
-            host: 'nsit-moksha.com',
-            path: '/api/account/check_user.php?user='+req.body.moksha_id
-        }, function(response) {
-            // Continuously update stream with data
-            var body = '';
-            response.on('data', function(d) {
-                body += d;
-            });
-            response.on('end', function() {
-
-                // Data reception is done, do whatever with it!
-                var parsed = JSON.parse(body);
-                if(parsed.success == true) {
-                    res.render('userInfo', {msg: 'User Exists.', err: false, user: parsed});
-                } else {
-                    res.render('userInfo', {msg: 'User Does Not Exists.', err: true, user: parsed});
-                }
-            });
-        });
-
-
-    }
-
-});
-
-router.get('/userInfo/:moksha_id', userLogic.isEM, function(req,res) {
-    Account.findOne({moksha_id:req.params.moksha_id},function(err,user){
-        if(!err && user) {
-            res.render('userInfo', { msg: 'User Exists.', err:false, inno: true, user:user, admin: true});
-        } else {
-            res.render('userInfo',{ msg: 'User Does Not Exist.', err:true});
-        }
-    });
-});
-
 router.post('/userInfo', userLogic.isEM, function(req,res) {
     Account.findOne({moksha_id:req.body.moksha_id},function(err,user){
         if(!err && user) {
-            res.render('userInfo', { msg: 'User Exists.', err:false, inno: true, user:user});
+            res.json({ msg: 'User Exists.', err:false, inno: true, user:user});
         } else {
-            res.render('userInfo',{ msg: 'User Does Not Exist.', err:true});
+            res.json({ msg: 'User Does Not Exist.', err:true});
         }
     });
-});
-
-
-router.get('/photoUpload',userLogic.isEM, function(req,res) {
-    res.render('photoUpload');
 });
 
 router.post('/photoUpload',userLogic.isEM, upload.single('userPhoto'), function(req,res) {
@@ -144,18 +72,12 @@ router.post('/photoUpload',userLogic.isEM, upload.single('userPhoto'), function(
         if(!err && user) {
             user.photoId = '/uploads/photoids/' + req.file.filename;
             user.save();
-            res.render('photoUpload', {err: false, msg: 'Success'});
+            res.json({err: false, msg: 'Success'});
         } else {
-            res.render('photoUpload', {err: true, msg: 'Failure'});
+            res.json({err: true, msg: 'Failure'});
         }
     });
 
 });
-
-router.get('/photoUpload/:moksha_id',function(req,res) {
-    res.render('photoUpload',{moksha_id:req.params.moksha_id});
-});
-
-
 
 module.exports = router;

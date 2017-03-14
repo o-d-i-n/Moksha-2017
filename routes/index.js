@@ -11,6 +11,7 @@ var config = require('config');
 var async = require("async");
 
 var hashids = new Hashids(config.get('hashids').secret, config.get('hashids').no_chars, config.get('hashids').chars);
+var passids = new Hashids(config.get('passids').secret, config.get('passids').no_chars, config.get('passids').chars);
 
 poolConfig = {
     pool: true,
@@ -24,16 +25,7 @@ poolConfig = {
 };
 var nMailer = nodemailer.createTransport(poolConfig);
 
-router.get('/', function (req, res) {
-    res.render('index', {user: req.user});
-});
-
-router.get('/register', function (req, res) {
-    res.render('register', {});
-});
-
 router.post('/register', function (req, res) {
-
     moksha_id = '';
     Account.register(new Account({email: req.body.email, endpoint:req.body.endpoint, firstName: req.body.firstName, lastName: req.body.lastName, college: req.body.college, phone_no: req.body.phone_no, dob: req.body.dob}), config.get('hashids').secret, function (err, account) {
         if (err) {
@@ -41,7 +33,7 @@ router.post('/register', function (req, res) {
         }
         passport.authenticate('local')(req, res, function () {
             account.moksha_id = 'M' + hashids.encode(account.accNo);
-            account.pass = hashids.encode(account._id);
+            account.pass = passids.encode(account._id);
             moksha_id = account.moksha_id;
             account.save(function (err) {
                 if(err)
@@ -84,10 +76,6 @@ router.get('/login/fb/callback',
     }
 );
 
-router.get('/login', function (req, res) {
-    res.render('login');
-});
-
 router.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), function (req, res) {
     res.json({msg:'success', user :req.user});
 });
@@ -95,14 +83,6 @@ router.post('/login', passport.authenticate('local', { failureRedirect: '/login'
 router.get('/logout', function (req, res) {
     req.logout();
     res.json({msg : 'success'});
-});
-
-router.get('/contact', function(req, res) {
-    if(req.isAuthenticated()) {
-        res.render('contactUs', {user: req.user});
-    } else {
-        res.render('contactUs', {user: {}});
-    }
 });
 
 router.post('/contact', function(req, res) {
@@ -126,22 +106,6 @@ router.post('/contact', function(req, res) {
             res.json({ msg: 'Message Sent! Thank You.', err: false, user: {}});
         }
     })
-});
-
-router.get('/about', function(req, res) {
-    res.render('about');
-});
-
-router.get('/sponsors', function(req, res) {
-    res.render('sponsors');
-});
-
-router.get('/schedule', function(req, res) {
-    res.render('schedule');
-});
-
-router.get('/campus', function(req, res) {
-    res.render('campus');
 });
 
 module.exports = router;
