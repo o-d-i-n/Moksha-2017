@@ -11,6 +11,10 @@ var upload = multer({
     limits: {fileSize: 10000000, files:1}
 });
 
+router.get('/details', userLogic.ensureAuthenticated, userLogic.getEvents, function (req, res) {
+    res.json({user: req.user, events: req.eventList});
+});
+
 router.post('/details', userLogic.ensureAuthenticated, function (req, res) {
     if (req.user)
     Account.findOne({_id: req.user._id},

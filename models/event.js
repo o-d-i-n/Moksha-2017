@@ -15,7 +15,6 @@ var Event = new Schema({
     maxParticipants: {type:Number, default:'1'},
     isTeamEvent: {type:Boolean,default:false},
     category: [String],
-    managers: [{type: Schema.ObjectId, ref: 'Account'}],
     // In case of team events, participants and winners refer to team._id of teams
     participants: [{type: Schema.ObjectId}],
     winners: [{type: Schema.ObjectId}]

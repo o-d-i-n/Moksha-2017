@@ -7,8 +7,6 @@ var userLogic = require('../logic/userLogic.js');
 var config = require('config');
 var async = require("async");
 
-var auth = config.get('mailgun');
-
 router.post('/emailBlast', function(req,res,next) {
     req.template = "emails/" + req.body.type;
 

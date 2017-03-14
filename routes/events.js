@@ -25,7 +25,7 @@ router.get('/category/:category', function (req, res) {
     });
 });
 
-router.post('/addEvent', userLogic.isEM, upload.single('eventPhoto'), function(req, res) {
+router.post('/addEvent', userLogic.ensureAuthenticated, userLogic.isEM, upload.single('eventPhoto'), function(req, res) {
     var linkName = req.body.name;
     linkName = linkName.replace(/\s+/g, '-').toLowerCase();
 
@@ -44,7 +44,7 @@ router.post('/addEvent', userLogic.isEM, upload.single('eventPhoto'), function(r
         details: req.body.details,
         fbLink: fbLink,
         minParticipants: req.body.minParticipants,
-        managers: [req.user._id],
+        maxParticipants: req.body.maxParticipants,
         category: req.body.category,
         isTeamEvent: req.body.isTeamEvent == 1,
         contact: req.body.contact,
@@ -66,14 +66,13 @@ router.post('/addEvent', userLogic.isEM, upload.single('eventPhoto'), function(r
     });
 });
 
-router.get('/:eventLink', userLogic.getTeams, eventLogic.isRegistered, function (req, res) {
+router.get('/:eventLink', function (req, res) {
     Event.findOne({linkName: req.params.eventLink},
         function (err, event) {
             if(!event || err ) {
                 res.json({msg: "Event not found! " + req.params.eventLink, error: {status: '', stack: ''}});
             }
             else {
-                console.log('inside event link' + res.locals.teams);
                 res.json({event: event});
             }
         });
@@ -131,7 +130,7 @@ router.post('/:eventLink/register/', userLogic.ensureAuthenticated, function (re
                                 if (err) {
                                     console.log(err);
                                     res.json({msg: 'failure', error: err});
-                                else
+                                }else
                                     res.json({msg: 'success'});
                             });
                         }
@@ -139,7 +138,7 @@ router.post('/:eventLink/register/', userLogic.ensureAuthenticated, function (re
                 } else {
                     res.json({error: "yes", msg: 'Some of the Moksha IDs were incorrect, please try again.', moksha_id: req.user.moksha_id});
                 }
-            }
+            });
         }
 
         //non team event
@@ -260,14 +259,16 @@ router.post('/:eventLink/register/', userLogic.ensureAuthenticated, function (re
 //     });
 // });
 
-router.post('/:eventLink/edit', userLogic.isEM, upload.single('eventPhoto'),
+router.post('/:eventLink/edit', userLogic.ensureAuthenticated, userLogic.isEM, upload.single('eventPhoto'),
     function(req, res) {
         Event.findOne({linkName: req.params.eventLink}, function (err, event) {
-            if (err)
+            if (err) {
                 console.log(err);
-            else {
-                var linkName = req.body.name;
-                linkName = linkName.replace(/\s+/g, '-').toLowerCase();
+                res.json({msg:'failue', error : err});
+            }else {
+                        var linkName = req.body.name;
+                if (linkName)
+                    linkName = linkName.replace(/\s+/g, '-').toLowerCase();
 
                 var fbLink = req.body.fbLink;
                 if (fbLink.indexOf('http') == -1)
@@ -282,7 +283,8 @@ router.post('/:eventLink/edit', userLogic.isEM, upload.single('eventPhoto'),
                 event.shortDetails = trimmedDetails;
                 event.details = req.body.details;
                 event.fbLink = fbLink;
-                event.minParticipants = req.body.minParticipants;
+                event.minParticipants = req.body.minParticipants == 1;
+                event.maxParticipants = req.body.maxParticipants == 1;
                 event.category = req.body.category;
                 event.isTeamEvent = req.body.isTeamEvent == 1;
                 event.contact = req.body.contact;
@@ -298,7 +300,7 @@ router.post('/:eventLink/edit', userLogic.isEM, upload.single('eventPhoto'),
 });
 
 //TODO: Admin Panel
-router.get('/:eventLink/participants', userLogic.isEM, function (req, res) {
+router.get('/:eventLink/participants', userLogic.ensureAuthenticated, userLogic.isEM, function (req, res) {
     Event.findOne({linkName: req.params.eventLink},
         function (err, event) {
             if(!event || err ) {
@@ -318,7 +320,7 @@ router.get('/:eventLink/participants', userLogic.isEM, function (req, res) {
         })
 });
 
-router.get('/:eventLink/participants.xls', userLogic.isEM, json2xls.middleware, function (req, res) {
+router.get('/:eventLink/participants.xls', userLogic.ensureAuthenticated, userLogic.isEM, json2xls.middleware, function (req, res) {
     Event.findOne({linkName: req.params.eventLink},
         function (err, event) {
             if(!event || err ) {

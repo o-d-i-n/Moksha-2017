@@ -6,8 +6,6 @@ var nodemailer  = require('nodemailer');
 var config = require('config');
 var webPush = require('web-push');
 
-var auth = config.get('mailgun');
-
 poolConfig = {
     pool: true,
     host: 'smtp.gmail.com',
@@ -38,26 +36,15 @@ var users = {
         next();
     },
     ensureAuthenticated: function(req, res, next) {
-        if(req.isAuthenticated()) {
-            return next();
-        } else {
-            res.redirect('/login');
-        }
-    },
-    getTeams: function(req, res, next) {
-        if(req.isAuthenticated()) {
-            Team.find({members: req.user._id}).lean().exec(function (err, teams) {
-                if (!err) {
-                    res.locals.teams = teams;
-                } else {
-                    res.locals.teams = [];
-                }
-                next();
-            });
-        } else {
-            res.locals.teams = [];
-            next();
-        }
+        Account.find({moksha_id: req.body.moksha_id}).lean().exec(function(err, acc) {
+            if (err || !acc)
+                res.json({msg: "moksha id does not exist", error: err});
+            else if (acc.pass == req.body.pass) {
+                res.user = acc;
+                return next();
+            } else
+                res.json({msg: "wrong pass", err: acc})
+        });
     },
     getEvents: function(req, res, next) {
         req.eventList = [];
@@ -90,24 +77,16 @@ var users = {
         //}).then(next());
     },
     isAdmin: function(req, res, next) {
-        if(req.isAuthenticated()) {
-            if(req.user.is_admin)
-                return next();
-            else
-                res.render("error", {msg: "You don't have permissions to view this", error: {}});
-        } else {
-            res.redirect('/login');
-        }
+        if(req.user.is_admin)
+            return next();
+        else
+            res.json({msg: "You don't have permissions to view thisA", error: req.user});
     },
     isEM: function(req, res, next) {
-        if(req.isAuthenticated()) {
-            if(req.user.is_em || req.user.is_admin)
-                return next();
-            else
-                res.json({msg: "You don't have permissions to view this", error:{}});
-        } else {
-            res.json({msg: "Logged out"});
-        }
+        if(req.user.is_em || req.user.is_admin)
+            return next();
+        else
+            res.json({msg: "You don't have permissions to view thisEM", error: req.user});
     },
     sendMail: function(to,subject,text,html,moksha_id,setsuc){
         var mailOpts;
@@ -124,10 +103,10 @@ var users = {
         nMailer.sendMail(mailOpts, function(err, response) {
             if (err) {
                 console.log('ERROR MAIL : ' + to);
-                setsuc(true, moksha_id);
+                setsuc(true, moksha_id, err);
             } else {
                 console.log('MAIL Sent : ' + to);
-                setsuc(false, moksha_id);
+                setsuc(false, moksha_id, "");
             }
         })
     },
