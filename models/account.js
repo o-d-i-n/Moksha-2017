@@ -37,6 +37,7 @@ var Account = new Schema({
     accessToken: String,
     moksha_id: {type:String, unique:true, dropDups:true, sparse:true},
     password: String,
+    pass: String,
     email: {type:String, validator:emailValidator, unique:true, dropDups:true, sparse:true, trim: true},
     firstName: String,
     lastName: String,
@@ -46,13 +47,10 @@ var Account = new Schema({
     gender: String,
     phone_no: {type:String, validate:phoneValidator, unique:true, dropDups:true, sparse:true, trim: true},
     college: {type:String, trim: true},
-    course: {type:String, trim: true},
-    year: String,
     dateJoined: Date,
     photoId: String,
     is_em: {type:Boolean,default:false},
-    is_admin: {type:Boolean,default:false},
-    is_new: {type:Boolean,default:true}
+    is_admin: {type:Boolean,default:false}
 });
 
 Account.plugin(autoIncrement.plugin, {model: 'Account', field: 'accNo'});

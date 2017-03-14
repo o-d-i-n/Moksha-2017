@@ -24,39 +24,19 @@ router.post('/details', userLogic.ensureAuthenticated, function (req, res) {
                 res.json({msg: err.msg, error: err});
             }
 
-            first_edit = 0;
-
-            if(user.is_new) {
-                first_edit = 1;
-            }
             if (user.email == null) {
                 user.email = req.body.email;
             }
             user.firstName = req.body.firstName;
             user.lastName = req.body.lastName;
             user.phone_no = req.body.phone_no;
-            user.is_new = false;
             user.dob = req.body.dob;
             user.college = req.body.college;
-            user.course = req.body.course;
-            user.year = req.body.year;
             user.save(function (err, data) {
                 if (err) {
                     console.log(err);
                     res.json({user: req.user, edit: 'failure'})
                 } else {
-                    if(first_edit) {
-                        var set = function(val, moksha_id) {
-                            if (val) {
-                                console.log("Error: " + moksha_id);
-                            }
-                        };
-                        res.app.render('emails/welcome', {user: data}, function (err, html) {
-                            userLogic.sendMail(data.email, "Welcome to Innovision'16!",
-                                "Greetings " + data.firstName + " ,Now that you've registered for Innovision '16, we welcome you to this four dimensional journey through space-time.Your INNO ID is " + data.moksha_id + ". You will be able to register for events and participate in them (and probably win exciting prizes!) with this. Please carry your INNO ID and an identification proof on the days of the fest, i.e. 9th to 12th March. If you have any further queries please drop us a mail at pr.innovision.nsit@gmail.com. See you there, Team Innovision"
-                                ,html, user.moksha_id, set);
-                        });
-                    }
                     res.json({user: data, edit: 'success'})
                 }
             });

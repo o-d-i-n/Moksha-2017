@@ -35,17 +35,28 @@ router.get('/register', function (req, res) {
 router.post('/register', function (req, res) {
 
     moksha_id = '';
-    Account.register(new Account({email: req.body.email, endpoint:req.body.endpoint}), req.body.password, function (err, account) {
+    Account.register(new Account({email: req.body.email, endpoint:req.body.endpoint, firstName: req.body.firstName, lastName: req.body.lastName, college: req.body.college, phone_no: req.body.phone_no, dob: req.body.dob}), config.get('hashids').secret, function (err, account) {
         if (err) {
             return res.json({msg: err.msg, error: err});
         }
         passport.authenticate('local')(req, res, function () {
             account.moksha_id = 'M' + hashids.encode(account.accNo);
+            account.pass = hashids.encode(account._id);
             moksha_id = account.moksha_id;
             account.save(function (err) {
                 if(err)
                     console.log(err);
                 else {
+                    var set = function(val, moksha_id) {
+                        if (val) {
+                            console.log("Error: " + moksha_id);
+                        }
+                    };
+                    res.app.render('emails/welcome', {user: data}, function (err, html) {
+                        userLogic.sendMail(data.email, "Welcome to Innovision'16!",
+                            "Greetings " + data.firstName + " ,Now that you've registered for Innovision '16, we welcome you to this four dimensional journey through space-time.Your INNO ID is " + data.moksha_id + ". You will be able to register for events and participate in them (and probably win exciting prizes!) with this. Please carry your INNO ID and an identification proof on the days of the fest, i.e. 9th to 12th March. If you have any further queries please drop us a mail at pr.innovision.nsit@gmail.com. See you there, Team Innovision"
+                            ,html, user.moksha_id, set);
+                    });
                     res.json({msg: 'success', moksha_id: account.moksha_id});
                 }
             });
