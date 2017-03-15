@@ -59,10 +59,10 @@ router.post('/addEvent', userLogic.ensureAuthenticated, userLogic.isEM, upload.s
     event.save(function (err, event) {
         if(err) {
             console.log(err);
-            res.json({msg: 'failure'});
+            res.json({msg: 'Failure'});
         }
         else
-            res.json({event: event.linkName, msg: 'success'});
+            res.json({event: event.linkName, msg: 'Success'});
     });
 });
 
@@ -129,9 +129,9 @@ router.post('/:eventLink/register/', userLogic.ensureAuthenticated, function (re
                             event.save(function (err, event) {
                                 if (err) {
                                     console.log(err);
-                                    res.json({msg: 'failure', error: err});
+                                    res.json({msg: 'Failure', error: err});
                                 }else
-                                    res.json({msg: 'success', event: event});
+                                    res.json({msg: 'Success', event: event});
                             });
                         }
                     });
@@ -143,14 +143,18 @@ router.post('/:eventLink/register/', userLogic.ensureAuthenticated, function (re
 
         //non team event
         else {
+            if (event.participants.find(id) != undefined) {
+                res.json({msg:"Already registered"});
+                return();
+            }
             event.participants.push(id);
             event.save(function (err, event) {
                 if(err) {
                     console.log(err);
-                    res.json({error: err, msg: 'failure'});
+                    res.json({error: err, msg: 'Failure'});
                 }
                 else
-                    res.json({msg: 'success'});
+                    res.json({msg: 'Success'});
             });
         }
     });
@@ -190,7 +194,7 @@ router.post('/:eventLink/edit', userLogic.ensureAuthenticated, userLogic.isEM, u
                 if (req.file)
                     event.photo = '/uploads/' + req.file.filename;
                 event.save(function() {
-                    res.json({msg: 'success', event: event});
+                    res.json({msg: 'Success', event: event});
                 });
             }
         })

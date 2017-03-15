@@ -34,9 +34,9 @@ router.post('/details', userLogic.ensureAuthenticated, function (req, res) {
             user.save(function (err, data) {
                 if (err) {
                     console.log(err);
-                    res.json({user: res.locals.acc, edit: 'failure'})
+                    res.json({user: res.locals.acc, edit: 'Failure'})
                 } else {
-                    res.json({user: data, edit: 'success'})
+                    res.json({user: data, edit: 'Success'})
                 }
             });
         });
@@ -47,14 +47,14 @@ router.post('/addEM', userLogic.isEM, function(req, res) {
     for(var i = 0; i < array.length; i++) {
         Account.findOne({moksha_id: array[i]}, function(err, user) {
             if (err || !user)
-                res.json({msg: "failure"});
+                res.json({msg: "Failure"});
             else {
                 user.is_em = true;
                 user.save(function (err) {
                     if (!err)
-                        res.json({msg: "success"})
+                        res.json({msg: "Success"})
                     else
-                        res.json({msg: "failure"});
+                        res.json({msg: "Failure"});
                 });
             }
         })
