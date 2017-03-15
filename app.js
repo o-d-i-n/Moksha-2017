@@ -19,7 +19,6 @@ var hashids = new Hashids(config.get('hashids').secret, config.get('hashids').no
 var index = require('./routes/index');
 var users = require('./routes/users');
 var events = require('./routes/events');
-// var admin = require('./routes/admin');
 
 var userLogic = require('./logic/userLogic');
 
@@ -55,10 +54,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // app.get('*', userLogic.setLoginStatus);
 app.use('/', index);
-app.use('/', admin);
 app.use('/users', users);
 app.use('/events', events);
-app.use('/teams', teams);
 
 // passport config
 passport.use(Account.createStrategy());

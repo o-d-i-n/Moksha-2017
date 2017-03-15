@@ -19,34 +19,16 @@ poolConfig = {
 var nMailer = nodemailer.createTransport(poolConfig);
 
 var users = {
-    setLoginStatus: function(req, res, next) {
-        if(req.isAuthenticated()) {
-            res.locals.login = true;
-            res.locals.firstName = req.user.firstName;
-            res.locals.is_admin = req.user.is_admin;
-            res.locals.is_em = req.user.is_em;
-            if (req.user.is_new && (req.path.indexOf('users/details') == -1 && req.path.indexOf('logout') == -1)) {
-                res.redirect('/users/details');
-            }
-        } else {
-            res.locals.login = false;
-            res.locals.is_admin = false;
-            res.locals.is_em = false;
-        }
-        next();
-    },
     ensureAuthenticated: function(req, res, next) {
         res.locals.acc = null;
         Account.find({moksha_id: req.body.moksha_id.toUpperCase()}).lean().exec(function(err, acc) {
             if (err || !acc)
-                res.json({msg: "moksha id does not exist", error: err});
+                res.json({msg: "Moksha id does not exist", error: err});
             else if (acc[0].pass == req.body.pass) {
                 res.locals.acc = acc[0];
-                console.log(acc[0]);
                 return next();
             } else {
-                res.json({msg: "wrong pass", acc: acc[0]});
-                console.log(req.body.pass);
+                res.json({msg: "Wrong password", acc: acc[0]});
             }
         });
     },
