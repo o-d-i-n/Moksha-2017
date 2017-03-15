@@ -145,7 +145,7 @@ router.post('/:eventLink/register/', userLogic.ensureAuthenticated, function (re
         else {
             if (event.participants.find(id) != undefined) {
                 res.json({msg:"Already registered"});
-                return();
+                return;
             }
             event.participants.push(id);
             event.save(function (err, event) {
