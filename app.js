@@ -7,9 +7,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
-var FacebookStrategy = require('passport-facebook').Strategy;
 var Account = require('./models/account');
-var paginate = require('express-paginate');
 var Hashids = require("hashids");
 
 const session = require('express-session');
@@ -21,9 +19,7 @@ var hashids = new Hashids(config.get('hashids').secret, config.get('hashids').no
 var index = require('./routes/index');
 var users = require('./routes/users');
 var events = require('./routes/events');
-var teams = require('./routes/teams');
-var admin = require('./routes/admin');
-var sitemap = require('./routes/sitemap');
+// var admin = require('./routes/admin');
 
 var userLogic = require('./logic/userLogic');
 
@@ -52,63 +48,25 @@ app.use(session({
         ttl: 24 * 60 * 60 // = 1 day expiry
     })
 }));
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(paginate.middleware(10, 50));
-
-app.get('*', userLogic.setLoginStatus);
+// app.get('*', userLogic.setLoginStatus);
 app.use('/', index);
 app.use('/', admin);
-app.use('/', sitemap);
 app.use('/users', users);
 app.use('/events', events);
 app.use('/teams', teams);
 
 // passport config
 passport.use(Account.createStrategy());
-passport.use(new FacebookStrategy({
-        clientID: config.get('fb').clientID,
-        clientSecret: config.get('fb').clientSecret,
-        callbackURL: config.get('fb').callbackURL,
-        profileFields: ['id', 'displayName', 'picture.type(large)', 'emails', 'name', 'gender']
-    },
-    function (accessToken, refreshToken, profile, done) {
-        Account.findOne({'providerData.id': profile.id},
-            function (err, user) {
-                if (err) {
-                    return done(err);
-                }
-                //No user found
-                if (!user) {
-                    user = new Account({
-                        firstName: profile.name.givenName,
-                        lastName: profile.name.familyName,
-                        gender: profile.gender,
-                        email: profile.emails[0].value || null,
-                        photo: profile.photos[0].value || null,
-                        provider: 'facebook',
-                        providerData: profile._json,
-                        accessToken: accessToken,
-                        is_new: true
-                    });
-                    user.save(function (err) {
-                        if (err) console.log(err);
-                        user.moksha_id = 'M' + hashids.encode(user.accNo);
-                        user.save(function(err) {
-                            return done(err, user);
-                        });
-                    });
-                } else {
-                    return done(err, user);
-                }
-            })
-    }
-));
+
 passport.serializeUser(function(user, done) {
     done(null, user._id);
 });
+
 passport.deserializeUser(function(id, done) {
     Account.findOne({_id: id}, function(err, user) {
         done(err, user);
@@ -121,23 +79,6 @@ app.use(function (req, res, next) {
     err.status = 404;
     next(err);
 });
-
-// error handlers
-
-// development error handler
-// will print stacktrace
-/*
-if (app.get('env') === 'development') {
-    app.use(function (err, req, res, next) {
-        res.status(err.status || 500);
-        console.log("BC!!! Development wala chal raha hai!!!!" + err);
-        res.render('error', {
-            msg: err.msg,
-            error: err
-        });
-    });
-}
-*/
 
 // production error handler
 // no stacktraces leaked to user

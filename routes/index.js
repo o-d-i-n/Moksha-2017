@@ -27,13 +27,13 @@ var nMailer = nodemailer.createTransport(poolConfig);
 
 router.post('/register', function (req, res) {
     moksha_id = '';
-    Account.register(new Account({email: req.body.email, endpoint:req.body.endpoint, firstName: req.body.firstName, lastName: req.body.lastName, college: req.body.college, phone_no: req.body.phone_no, dob: req.body.dob}), config.get('passids').secret, function (err, account) {
+    Account.register(new Account({email: req.body.email, endpoint:req.body.endpoint, firstName: req.body.firstName, lastName: req.body.lastName, college: req.body.college, phone_no: req.body.phone_no, dob: req.body.dob}), req.body.password, function (err, account) {
         if (err) {
             return res.json({msg: err.msg, error: err});
         }
         passport.authenticate('local')(req, res, function () {
             account.moksha_id = 'M' + hashids.encode(account.accNo);
-            account.pass = passids.encode(account.accNo);
+            account.pass = "" + passids.encode(account.accNo);
             moksha_id = account.moksha_id;
             account.save(function (err, data) {
                 if(err)
@@ -46,38 +46,18 @@ router.post('/register', function (req, res) {
                     };
                     res.app.render('emails/welcome', {user: data}, function (err, html) {
                         userLogic.sendMail(data.email, "Welcome to Moksha'17!",
-                            "Greetings " + data.firstName + " ,Now that you've registered for Innovision '16, we welcome you to this four dimensional journey through space-time.Your Moksha ID is " + data.moksha_id + " " + data.pass + ". You will be able to register for events and participate in them (and probably win exciting prizes!) with this. Please carry your INNO ID and an identification proof on the days of the fest, i.e. 9th to 12th March. If you have any further queries please drop us a mail at pr.innovision.nsit@gmail.com. See you there, Team Innovision"
+                            "Greetings " + data.firstName + " ,Congratulations! You have been successfully registered to be a part of MOKSHA, the annual cultural fest of Netaji Subhas Institute of Technology. With high spirits and a presentiment of pure bliss, we are looking forward to yet another year of great participation and numerous cultural facets from across the country, engaging in a true, competitive spirit. With a sense of youthful exuberance, we invite you to be a part of the biggest explosion that will take the capital by storm! Your Moksha ID is " + data.moksha_id + " and Password is " + data.pass + " . You will be able to register for events and participate in them (and probably win exciting prizes!) with this. Please carry your Moksha ID and an identification proof on the days of the fest, i.e. 29th to 31st March. If you have any further queries please drop us a mail at publicrelations.moksha@gmail.com. See you there, Team Moksha"
                             ,html, data.moksha_id, set);
                     });
-                    res.json({msg: 'success', moksha_id: account.moksha_id});
+                    res.json({msg: 'success', moksha_id: account.moksha_id, email: account.email});
                 }
             });
         });
     });
 });
 
-
-router.get('/login/fb', passport.authenticate('facebook', {authType: 'rerequest', scope: ['email']}));
-
-router.get('/login/fb/callback',
-    passport.authenticate('facebook', {
-        failureRedirect: '/login'
-    }), function(req, res) {
-        if (req.user.is_new) {
-            res.json({is_new: true, });
-        } else {
-            res.redirect('/');
-        }
-    }, function(err, req, res) {
-        if(err) {
-            req.logout();
-            res.redirect('/login');
-        }
-    }
-);
-
-router.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), function (req, res) {
-    res.json({msg:'success', user :req.user});
+router.post('/login', userLogic.ensureAuthenticated, function (req, res) {
+    res.json({msg:'success', user :res.locals.acc});
 });
 
 router.get('/logout', function (req, res) {
@@ -97,11 +77,8 @@ router.post('/contact', function(req, res) {
 
     nMailer.sendMail(mailOpts, function(err, response) {
         var user = {};
-        if (req.isAuthenticated()) {
-            user = req.user;
-        }
         if (err) {
-            res.json({ msg: 'Error occured, Message not sent.', err: err, user: user});
+            res.json({ msg: 'Error occured, Message not sent.', err: err});
         } else {
             res.json({ msg: 'Message Sent! Thank You.', err: false, user: {}});
         }

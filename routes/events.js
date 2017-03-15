@@ -79,9 +79,8 @@ router.get('/:eventLink', function (req, res) {
 });
 
 router.post('/:eventLink/register/', userLogic.ensureAuthenticated, function (req, res){
-
     var elink=req.params.eventLink;
-    var id = req.user._id;
+    var id = res.locals.acc._id;
 
     Event.findOne({linkName: elink}, function(err, event) {
 
@@ -96,10 +95,11 @@ router.post('/:eventLink/register/', userLogic.ensureAuthenticated, function (re
                 res.json({msg: "No of participants are out of bounds",error : 'yes'});
                 return;
             }
+            var moksha_ids = req.body.members.split(',');
             var teamX = [];
-            teamX.push(id);
-            for (i = 0; i < count - 1; i++) {
-                var idX = req.body.members[i].trim().toUpperCase();
+            teamX.push(res.locals.acc.moksha_id);
+            for (var i = 0; i < count - 1; i++) {
+                var idX = moksha_ids[0].trim().toUpperCase();
                 i++;
                 teamX.push(idX);
             }
@@ -107,7 +107,7 @@ router.post('/:eventLink/register/', userLogic.ensureAuthenticated, function (re
             Account.find({moksha_id:{ $in: teamX }},function(err, users) {
                 if (err) {
                     console.log(err);
-                    res.json({msg: 'Some of the users were not found, please check the INNO IDs', error: err, moksha_id: req.user.moksha_id});
+                    res.json({msg: 'Some of the users were not found, please check the Moksha IDs', error: err, moksha_id: res.locals.acc.moksha_id, mem: teamX});
                 } else if (users.length == teamX.length) {
                     mem = [];
                     for (var i=0; i < users.length; i++) {
@@ -123,7 +123,7 @@ router.post('/:eventLink/register/', userLogic.ensureAuthenticated, function (re
                     team.save(function (err, Team) {
                         if(err) {
                             console.log(err);
-                            res.json({error: err, moksha_id: req.user.moksha_id});
+                            res.json({error: err, moksha_id: res.locals.acc.moksha_id});
                         } else {
                             event.participants.push(team._id);
                             event.save(function (err, event) {
@@ -131,12 +131,12 @@ router.post('/:eventLink/register/', userLogic.ensureAuthenticated, function (re
                                     console.log(err);
                                     res.json({msg: 'failure', error: err});
                                 }else
-                                    res.json({msg: 'success'});
+                                    res.json({msg: 'success', event: event});
                             });
                         }
                     });
                 } else {
-                    res.json({error: "yes", msg: 'Some of the Moksha IDs were incorrect, please try again.', moksha_id: req.user.moksha_id});
+                    res.json({error: "yes", msg: 'Some of the Moksha IDs were incorrect, please try again.', moksha_id: res.locals.acc.moksha_id, mem: teamX});
                 }
             });
         }
@@ -155,109 +155,6 @@ router.post('/:eventLink/register/', userLogic.ensureAuthenticated, function (re
         }
     });
 });
-
-// router.post('/:eventLink/register-i', function (req, res){
-//     var elink=req.params.eventLink;
-//     var array = req.body.moksha_ids.split(',');
-//     for(var i = 0; i < array.length; i++) {
-//         Event.findOne({linkName: elink}, function (err, event) {
-//             if (!event || err) {
-//                 res.json({msg: "Event not found", error: {status: '', stack: ''}});
-//             }
-//             //non team event
-//             else {
-//                 Account.find({moksha_id: {$in: array}}).lean().exec(function(err, users) {
-//                     var ids = [];
-//                     for (var i in users) {
-//                         ids.push(users[i]._id);
-//                     }
-//                     event.participants.push.apply(event.participants, ids);
-//                     event.save(function (err, event) {
-//                         if (err) {
-//                             console.log(err);
-//                             res.json({error : err, msg: 'failure'});
-//                         }
-//                         res.json({msg : 'success'});
-//                     });
-//
-//                 });
-//             }
-//         });
-//     }
-// });
-//
-// router.post('/:eventLink/register-t', function (req, res){
-//     Event.findOne({linkName: req.params.eventLink}, function(err, event) {
-//         if (!event || err) {
-//             res.json({success: false});
-//         } else {
-//             var count=req.body.category;
-//             count--;
-//             var inno = [];
-//             var captain = req.body.captain;
-//             inno.push(captain);
-//             if(count){
-//                 var id2 = req.body.mem2.trim().toUpperCase();
-//                 count--;
-//                 inno.push(id2);
-//             }
-//             if(count){
-//                 var id3 = req.body.mem3.trim().toUpperCase();
-//                 count--;
-//                 inno.push(id3);
-//             }
-//             if(count){
-//                 var id4 = req.body.mem4.trim().toUpperCase();
-//                 count--;
-//                 inno.push(id4);
-//             }
-//             if(count){
-//                 var id5 = req.body.mem5.trim().toUpperCase();
-//                 count--;
-//                 inno.push(id5);
-//             }
-//             if(count){
-//                 var id6 = req.body.mem6.trim().toUpperCase();
-//                 inno.push(id6);
-//             }
-//             var tname = req.body.name;
-//             var mem = [];
-//
-//             Account.find({moksha_id:{ $in: inno }},function(err, users) {
-//                 console.log("in");
-//                 if (err) {
-//                     console.log(err);
-//                     res.redirect('/events/' + event.linkName + '/participants/error');
-//                 } else if (users.length == inno.length) {
-//                     for (var i=0; i < users.length; i++) {
-//                         console.log(users[i]._id);
-//                         mem.push(users[i]._id);
-//                     }
-//
-//                     team = new Team({
-//                         name: tname,
-//                         members: mem,
-//                         captain: mem[0]
-//                     });
-//
-//                     team.save(function (err, Team) {
-//                         if(err) {
-//                             console.log(err);
-//                             res.redirect('/events/' + event.linkName + '/participants/name-taken');
-//                         } else {
-//                             event.participants.push(Team._id);
-//                             event.save(function() {
-//                                 res.redirect('/events/' + event.linkName + '/participants/success');
-//                             });
-//                         }
-//                     });
-//                 } else {
-//                     res.redirect('/events/' + event.linkName + '/participants/invalid-inno-ids');
-//                 }
-//             });
-//         }
-//     });
-// });
 
 router.post('/:eventLink/edit', userLogic.ensureAuthenticated, userLogic.isEM, upload.single('eventPhoto'),
     function(req, res) {
@@ -300,27 +197,29 @@ router.post('/:eventLink/edit', userLogic.ensureAuthenticated, userLogic.isEM, u
 });
 
 //TODO: Admin Panel
-router.get('/:eventLink/participants', userLogic.ensureAuthenticated, userLogic.isEM, function (req, res) {
+router.post('/:eventLink/participants', userLogic.ensureAuthenticated, userLogic.isEM, function (req, res) {
     Event.findOne({linkName: req.params.eventLink},
         function (err, event) {
             if(!event || err ) {
                 res.json({msg: "Event not found!", error: {status: 404, stack: ''}});
             } else {
                 var list = event.participants;
+                console.log(list);
                 if (!event.isTeamEvent) {
                     Account.find({_id: {$in: list}}).lean().exec(function (err, users) {
-                        res.json({participants: users, event: event, err: ""});
+                        console.log(users);
+                        res.json({participants: users, event: event});
                     })
                 } else {
                     Team.find({_id: {$in: list}}).populate('members captain').lean().exec(function(err, teams) {
-                        res.json({teams: teams, event: event, err: ""});
+                        res.json({teams: teams, event: event});
                     })
                 }
             }
         })
 });
 
-router.get('/:eventLink/participants.xls', userLogic.ensureAuthenticated, userLogic.isEM, json2xls.middleware, function (req, res) {
+router.post('/:eventLink/participants.xls', userLogic.ensureAuthenticated, userLogic.isEM, json2xls.middleware, function (req, res) {
     Event.findOne({linkName: req.params.eventLink},
         function (err, event) {
             if(!event || err ) {

@@ -36,14 +36,18 @@ var users = {
         next();
     },
     ensureAuthenticated: function(req, res, next) {
-        Account.find({moksha_id: req.body.moksha_id}).lean().exec(function(err, acc) {
+        res.locals.acc = null;
+        Account.find({moksha_id: req.body.moksha_id.toUpperCase()}).lean().exec(function(err, acc) {
             if (err || !acc)
                 res.json({msg: "moksha id does not exist", error: err});
-            else if (acc.pass == req.body.pass) {
-                res.user = acc;
+            else if (acc[0].pass == req.body.pass) {
+                res.locals.acc = acc[0];
+                console.log(acc[0]);
                 return next();
-            } else
-                res.json({msg: "wrong pass", err: acc})
+            } else {
+                res.json({msg: "wrong pass", acc: acc[0]});
+                console.log(req.body.pass);
+            }
         });
     },
     getEvents: function(req, res, next) {
@@ -77,16 +81,16 @@ var users = {
         //}).then(next());
     },
     isAdmin: function(req, res, next) {
-        if(req.user.is_admin)
+        if(res.locals.acc.is_admin)
             return next();
         else
-            res.json({msg: "You don't have permissions to view thisA", error: req.user});
+            res.json({msg: "You don't have permissions to view thisA", error: res.locals.acc});
     },
     isEM: function(req, res, next) {
-        if(req.user.is_em || req.user.is_admin)
+        if(res.locals.acc.is_em || res.locals.acc.is_admin)
             return next();
         else
-            res.json({msg: "You don't have permissions to view thisEM", error: req.user});
+            res.json({msg: "You don't have permissions to view thisEM", error: res.locals.acc});
     },
     sendMail: function(to,subject,text,html,moksha_id,setsuc){
         var mailOpts;

@@ -12,12 +12,12 @@ var upload = multer({
 });
 
 router.get('/details', userLogic.ensureAuthenticated, userLogic.getEvents, function (req, res) {
-    res.json({user: req.user, events: req.eventList});
+    res.json({user: res.locals.acc, events: req.eventList});
 });
 
 router.post('/details', userLogic.ensureAuthenticated, function (req, res) {
-    if (req.user)
-    Account.findOne({_id: req.user._id},
+    if (res.locals.acc)
+    Account.findOne({_id: res.locals.acc._id},
         function (err, user) {
             if(err) {
                 res.json({msg: err.msg, error: err});
@@ -34,7 +34,7 @@ router.post('/details', userLogic.ensureAuthenticated, function (req, res) {
             user.save(function (err, data) {
                 if (err) {
                     console.log(err);
-                    res.json({user: req.user, edit: 'failure'})
+                    res.json({user: res.locals.acc, edit: 'failure'})
                 } else {
                     res.json({user: data, edit: 'success'})
                 }

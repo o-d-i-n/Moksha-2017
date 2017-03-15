@@ -20,37 +20,4 @@ var Event = new Schema({
     winners: [{type: Schema.ObjectId}]
 });
 
-Event.methods.next = function(cb) {
-    var model = this.model("Quote");
-    model.findOne()
-        .where('category').equals(this.category)
-        .where('_id').gt(this._id).exec(function(err, event) {
-        if (err) throw err;
-
-        if (event) {
-            cb(event);
-        } else {
-            // If quote is null, we've wrapped around.
-            model.findOne(cb);
-        }
-    });
-};
-
-Event.methods.previous = function(cb) {
-    var model = this.model("Quote");
-    model.findOne()
-        .where('category').equals(this.category)
-        .where('_id').lt(this._id).exec(function(err, event) {
-        if (err) throw err;
-
-        if (event) {
-            cb(event);
-        } else {
-            // If quote is null, we've wrapped around.
-            model.findOne(cb);
-        }
-    });
-};
-
-
 module.exports = mongoose.model('Event', Event);
