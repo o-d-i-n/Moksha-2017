@@ -52,6 +52,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(express.static('web'))
+
 // app.get('*', userLogic.setLoginStatus);
 app.use('/', index);
 app.use('/users', users);

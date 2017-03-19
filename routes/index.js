@@ -1,5 +1,6 @@
 var express = require('express');
 var passport = require('passport');
+var path = require('path');
 var Account = require('../models/account');
 var Team = require('../models/team');
 var Event = require('../models/event');
@@ -24,6 +25,10 @@ poolConfig = {
     }
 };
 var nMailer = nodemailer.createTransport(poolConfig);
+
+router.get('/', function (req, res) {
+    res.sendFile(path.resolve('web/index.html'));
+})
 
 router.post('/register', function (req, res) {
     moksha_id = '';

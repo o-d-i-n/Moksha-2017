@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Initial Page Loading Effect</title>
+		<meta name="description" content="Initial Page Loading Effect: Re-creating the effect seen on fontface.ninja" />
+		<meta name="keywords" content="page loading, effect, initial, logo, sliding, web design, css animation, transform" />
+		<meta name="author" content="Codrops" />
+		<link rel="shortcut icon" href="../favicon.ico">
+		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="css/demo.css" />
+		<link rel="stylesheet" type="text/css" href="css/effect1.css" />
+		<link rel="stylesheet" type="text/css" href="css/custom.css" />
+		<script src="js/modernizr.custom.js"></script>
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+	</head>
+	<body class="demo-1">
+		<div id="ip-container" class="ip-container">
+			<!-- initial header -->
+			<header class="ip-header">
+				<h1 class="ip-logo">
+					<object id="ip-inner" type="image/svg+xml" data="Moksha2017Logo.svg" width="200" preserveAspectRatio="xMidYMin meet">
+						Moksha 2017
+					</object>
+				</h1>
+				<div class="ip-loader">
+					<!-- <svg class="ip-inner" width="60px" height="60px" viewBox="0 0 80 80">
+						<path class="ip-loader-circlebg" d="M40,10C57.351,10,71,23.649,71,40.5S57.351,71,40.5,71 S10,57.351,10,40.5S23.649,10,40.5,10z"/>
+						<path id="ip-loader-circle" class="ip-loader-circle" d="M40,10C57.351,10,71,23.649,71,40.5S57.351,71,40.5,71 S10,57.351,10,40.5S23.649,10,40.5,10z"/>
+					</svg> -->
+					<object id="loader-svg" type="image/svg+xml" data="suraj.svg" width="400" height="400" preserveAspectRatio="xMidYMin meet">
+						Loading
+					</object>
+					<p id="load-status">initiate</p>
+				</div>
+			</header>
+			<!-- main content -->
+			<div class="ip-main">
+				<!-- Content Goes HERE -->
+				<nav class="codrops-demos">
+					<a class="current-demo">About</a>
+					<a>Registration</a>
+					<a>Events</a>
+					<a>Sponsors</a>
+					<a>Contact Us</a>
+				</nav>
+				<section id="content-canvas">
+					<div class="section-page" data-tab="about">
+						<h2>Attain Moksha With Lost Traditions.</h2>
+						<p>Zeus showers his blessings in the form of thunder strikes. Hecate will embody the fest in her magic, Aphrodite will bring out the beauty of life, and Athena will renew a long lost wisdom. Apollo will sharpen the musical scales, and Dionysus will draw upon the drinks and revelry! Moksha will have a new meaning this year.</p>
+						<p>We invite you to the realm of Moksha to witness a myriad of mythological experiences. Mark your calendars for an exhilarating three days from 29th to 31st March.</p>
+					</div>
+					<div class="section-page" data-tab="registration">
+						<input type="text" name="registration-name" placeholder="Name"><br>
+						<input type="text" name="registration-college" placeholder="College"><br>
+						<input type="text" name="registration-email" placeholder="Email"><br>
+						<input type="text" name="registration-phone" placeholder="Phone Number"><br>
+						<button class="moksha-button">Register</button>
+					</div>
+				</section>
+			</div>
+		</div><!-- /container -->
+		<script src="js/classie.js"></script>
+		<script src="js/pathLoader.js"></script>
+		<script src="js/main.js"></script>
+		<script src="js/custom.js"></script>
+	</body>
+</html>
