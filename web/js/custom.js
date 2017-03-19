@@ -56,19 +56,63 @@ $('#content-canvas>div[data-tab="about"]').fadeIn();
 
 
 
-function validateEmail(emailField){
+function validateEmail (emailField) {
         var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
 
-        if (reg.test(emailField.value) == false) 
+        if (reg.test(emailField.value) == false)
         { $("#emailid").removeClass('trans-border');
              $("#emailid").addClass('red-border');
-            
+
         return false;
         }
         else
   {   $("#emailid").removeClass('red-border');
     $("#emailid").addClass('trans-border');
     return true;}
-          
+
 }
 
+function returnDataObjectFromForm(type) {
+  var args = $('form[name="' + type + '-form"]').serializeArray();
+  var data = {};
+  for(var i = 0; i < args.length ; i++) {
+    data[args[i].name] = args[i].value;
+  }
+  return data;
+}
+
+$('#register-for-moksha').click(function (e) {
+  e.preventDefault();
+  var data = returnDataObjectFromForm('register');
+  console.log(data);
+  $.ajax({
+    url: '/register',
+    type: 'post',
+    data: data,
+    dataType: 'json',
+    success: function(r) {
+      console.log(r);
+    },
+    error: function(e) {
+      console.log(e);
+    }
+  });
+});
+
+$('#login-for-moksha').click(function (e) {
+  e.preventDefault();
+  var data = returnDataObjectFromForm('login');
+  console.log(data);
+  $.ajax({
+    url: '/login',
+    type: 'post',
+    data: data,
+    dataType: 'json',
+    success: function(r) {
+      console.log(r);
+    },
+    error: function(e) {
+      console.log(e);
+    }
+  });
+});

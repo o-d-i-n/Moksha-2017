@@ -22,13 +22,13 @@ var users = {
     ensureAuthenticated: function(req, res, next) {
         res.locals.acc = null;
         Account.find({moksha_id: req.body.moksha_id.toUpperCase()}).lean().exec(function(err, acc) {
-            if (err || !acc)
-                res.json({msg: "Moksha id does not exist", error: err});
+            if (err || !acc.length)
+                res.json({msg: "Moksha ID does not exist", error: "Invalid Moksha ID"});
             else if (acc[0].pass == req.body.pass) {
                 res.locals.acc = acc[0];
                 return next();
             } else {
-                res.json({msg: "Wrong password", moksha_id: acc[0].moksha_id});
+                res.json({msg: "Wrong Password", moksha_id: acc[0].moksha_id});
             }
         });
     },

@@ -46,6 +46,7 @@
 				<nav class="codrops-demos">
 					<a class="current-demo">About</a>
 					<a>Registration</a>
+					<a>Login</a>
 					<a>Events</a>
 					<a>Sponsors</a>
 					<a>Contact Us</a>
@@ -57,18 +58,20 @@
 						<p>We invite you to the realm of Moksha to witness a myriad of mythological experiences. Mark your calendars for an exhilarating three days from 29th to 31st March.</p>
 					</div>
 					<div class="section-page" data-tab="registration">
-
-						<form   action="" method="get"  name="myForm">
-
-             			<i class="material-icons">person</i><input type="text" required name="registration-name" placeholder="Name"><br>
-
-            			<i class="material-icons">school</i><input type="text" required name="registration-college" placeholder="College"><br>
-
-             			<i class="material-icons">email</i><input id="emailid" type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required title="a...z@a..z.in" name="registration-email" placeholder="Email"  onkeyup="validateEmail(this);" ><br>
-             			<i class="material-icons">phone</i><input  type="text" required name="registration-phone" placeholder="Phone Number"><br>
-            			<i class="material-icons" style="opacity:0">check</i><button type="submit" class="moksha-button " >Register</button>
-
-               </form>
+						<form name="register-form">
+							<i class="material-icons">person</i><input type="text" required name="firstName" placeholder="Name"><br>
+							<i class="material-icons">school</i><input type="text" required name="college" placeholder="College"><br>
+							<i class="material-icons">email</i><input id="emailid" type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required title="a...z@a..z.in" name="email" placeholder="Email"  onkeyup="validateEmail(this);" ><br>
+             	<i class="material-icons">phone</i><input  type="text" required name="phone_no" placeholder="Phone Number"><br>
+            	<i class="material-icons" style="opacity:0">check</i><button type="submit" class="moksha-button" id="register-for-moksha" >Register</button>
+						</form>
+					</div>
+					<div class="section-page" data-tab="login">
+						<form name="login-form">
+							<i class="material-icons">person</i><input type="text" required name="moksha_id" placeholder="Moksha ID"><br>
+							<i class="material-icons">lock</i><input type="password" required name="pass" placeholder="Password"><br>
+            	<i class="material-icons" style="opacity:0">check</i><button type="submit" class="moksha-button" id="login-for-moksha">Login</button>
+						</form>
 					</div>
 					<div class="section-page" data-tab="events">
 						<div class="events-container">

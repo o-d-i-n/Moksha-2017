@@ -32,6 +32,7 @@ router.get('/', function (req, res) {
 
 router.post('/register', function (req, res) {
     moksha_id = '';
+    req.body.password = req.body.password || 'xxxxxx';
     Account.register(new Account({email: req.body.email, endpoint:req.body.endpoint, firstName: req.body.firstName, lastName: req.body.lastName, college: req.body.college, phone_no: req.body.phone_no, dob: req.body.dob}), req.body.password, function (err, account) {
         if (err) {
             return res.json({msg: err.msg, error: err});
