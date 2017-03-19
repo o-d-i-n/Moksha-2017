@@ -66,7 +66,7 @@ object#ip-inner {
   width: 280px;
   margin: 5px;
   padding: 10px;
-  border: none;
+  border: 1px solid transparent  ;
   outline: none;
   background-color: #333;
   color: #fff;
@@ -97,3 +97,18 @@ object#ip-inner {
     from {transform:rotate(0deg);}
     to {transform:rotate(360deg);}
 }
+
+
+i{ vertical-align: middle !important; }
+
+
+.red-border {
+  border: 1px solid red !important;  
+}
+
+.trans-border{
+
+
+   border: 1px solid transparent !important;
+}
+
