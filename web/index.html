@@ -14,6 +14,7 @@
 		<link rel="stylesheet" type="text/css" href="css/demo.css" />
 		<link rel="stylesheet" type="text/css" href="css/effect1.css" />
 		<link rel="stylesheet" type="text/css" href="css/custom.css" />
+		<link rel="stylesheet" type="text/css" href="css/modal.css" />
 		<script src="js/modernizr.custom.js"></script>
 		<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 	</head>
@@ -60,6 +61,75 @@
 						<input type="text" name="registration-phone" placeholder="Phone Number"><br>
 						<button class="moksha-button">Register</button>
 					</div>
+					<div class="section-page" data-tab="events">
+						<div class="events-container">
+								<div class="event-tile event-type">
+									<div class="event-type-name">
+										MUSIC
+									</div>
+								</div>
+								<div class="event-tile modal-trigger" data-modal="modal-instrumental">
+									<div class="event-image-div">
+										<img class="event-image" src="img/relatedposts/HeaderEffects.jpg"/>
+									</div>
+									<h3>Instumental</h3>
+								</div>
+								<div class="modal modal-effect-fade" id="modal-instrumental">
+									<div class="modal-content">
+										<div class="modal-heading-div">
+											<div class="modal-heading">Instrumental music</div>
+											<div class="modal-close">X</div>
+										</div> 
+										<div>
+											<p>This is a modal window. You can do the following things with it:</p>
+											<ul>
+												<li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+												<li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+												<li><strong>Close:</strong> click on the button below to close the modal.</li>
+											</ul>
+											<button class="register">Register</button>
+										</div>
+									</div>
+								</div>
+								<div class="event-tile modal-trigger" data-modal="modal-instrumental-2">
+									<div class="event-image-div">
+										<img class="event-image" src="img/relatedposts/ArticleIntroEffects.png" alt="Article Intro Effects" />
+									</div>
+									<h3>Instrumental</h3>
+								</div>
+								<div class="modal modal-effect-fade" id="modal-instrumental-2">
+									<div class="modal-content">
+										<div class="modal-heading-div">
+											<div class="modal-heading">Instrumental music</div>
+											<div class="modal-close">X</div>
+										</div> 
+										<div>
+											<p>This is a modal window. You can do the following things with it:</p>
+											<ul>
+												<li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+												<li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+												<li><strong>Close:</strong> click on the button below to close the modal.</li>
+											</ul>
+											<button class="register">Register</button>
+										</div>
+									</div>
+								</div>
+								<div class="event-tile">
+									<div class="event-image-div">
+										<img class="event-image" src="img/relatedposts/HeaderEffects.jpg" alt="Header Effects"/>
+									</div>
+									<h3>Group Song</h3>
+								</div>
+								<div class="event-tile">
+									<div class="event-image-div">
+										<img class="event-image" src="img/relatedposts/ArticleIntroEffects.png" alt="Article Intro Effects" />
+									</div>
+									<h3>Solo</h3>
+								</div>
+								<div class="modal-overlay"></div>
+						</div>
+						
+					</div>
 				</section>
 			</div>
 		</div><!-- /container -->
@@ -67,5 +137,6 @@
 		<script src="js/pathLoader.js"></script>
 		<script src="js/main.js"></script>
 		<script src="js/custom.js"></script>
+		<script src="js/modal.js"></script>
 	</body>
 </html>
