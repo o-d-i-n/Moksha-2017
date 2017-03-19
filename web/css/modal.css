@@ -64,6 +64,10 @@
 	opacity: 0.8;
 	background: rgba(0,0,0,0.1);
 	border-radius: 3px 3px 0 0;
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
 	display:flex;
 }
 
@@ -126,4 +130,39 @@
 }
 .modal-trigger{
 	cursor:pointer;
+}
+
+/* Media queries */
+
+@media screen and (max-width: 45em) {
+
+	.modal {
+		width:100%;
+	}
+	.modal-content{
+		height:100vh;
+		border-radius: 0;
+	}
+
+}
+
+@media screen and (max-width: 60em) and (min-width: 45em) {
+
+	.modal {
+		width:80%;
+	}
+
+}
+
+
+@media screen and (max-width: 45em) {
+
+	.modal {
+		width:100%;
+	}
+	.modal-content{
+		height:100vh;
+		border-radius: 0;
+	}
+
 }

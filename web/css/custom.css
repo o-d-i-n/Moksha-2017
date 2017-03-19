@@ -174,3 +174,11 @@ i{ vertical-align: middle !important; }
   font-size: 22px;
   font-family: "baron_neue"
 }
+
+@media screen and (max-width: 60em) {
+
+  .events-container{
+    justify-content: space-around;
+  }
+
+}

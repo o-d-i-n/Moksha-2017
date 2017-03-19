@@ -14,7 +14,6 @@ var ModalEffect = (function() {
 			}
 
 			el.addEventListener( 'click', function( ev ) {
-				console.log("Yolo");
 				classie.add( modal, 'modal-show' );
 				overlay.removeEventListener( 'click', removeModal );
 				overlay.addEventListener( 'click', removeModal );
