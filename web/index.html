@@ -16,6 +16,8 @@
 		<link rel="stylesheet" type="text/css" href="css/custom.css" />
 		<script src="js/modernizr.custom.js"></script>
 		<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	
 	</head>
 	<body class="demo-1">
 		<div id="ip-container" class="ip-container">
@@ -54,11 +56,18 @@
 						<p>We invite you to the realm of Moksha to witness a myriad of mythological experiences. Mark your calendars for an exhilarating three days from 29th to 31st March.</p>
 					</div>
 					<div class="section-page" data-tab="registration">
-						<input type="text" name="registration-name" placeholder="Name"><br>
-						<input type="text" name="registration-college" placeholder="College"><br>
-						<input type="text" name="registration-email" placeholder="Email"><br>
-						<input type="text" name="registration-phone" placeholder="Phone Number"><br>
-						<button class="moksha-button">Register</button>
+						
+						<form   action="" method="get"  name="myForm">
+                
+             			<i class="material-icons">person</i><input type="text" required name="registration-name" placeholder="Name"><br>
+
+            			<i class="material-icons">school</i><input type="text" required name="registration-college" placeholder="College"><br>
+
+             			<i class="material-icons">email</i><input id="emailid" type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required title="a...z@a..z.in" name="registration-email" placeholder="Email"  onkeyup="validateEmail(this);" ><br>
+             			<i class="material-icons">phone</i><input  type="text" required name="registration-phone" placeholder="Phone Number"><br>
+            			<i class="material-icons" style="opacity:0">check</i><button type="submit" class="moksha-button " >Register</button>
+            
+               </form>
 					</div>
 				</section>
 			</div>
@@ -67,5 +76,6 @@
 		<script src="js/pathLoader.js"></script>
 		<script src="js/main.js"></script>
 		<script src="js/custom.js"></script>
+		
 	</body>
 </html>

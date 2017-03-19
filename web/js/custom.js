@@ -53,3 +53,22 @@ navNodes.click(function() {
 });
 
 $('#content-canvas>div[data-tab="about"]').fadeIn();
+
+
+
+function validateEmail(emailField){
+        var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+
+        if (reg.test(emailField.value) == false) 
+        { $("#emailid").removeClass('trans-border');
+             $("#emailid").addClass('red-border');
+            
+        return false;
+        }
+        else
+  {   $("#emailid").removeClass('red-border');
+    $("#emailid").addClass('trans-border');
+    return true;}
+          
+}
+
