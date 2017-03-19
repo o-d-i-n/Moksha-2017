@@ -28,7 +28,7 @@ var users = {
                 res.locals.acc = acc[0];
                 return next();
             } else {
-                res.json({msg: "Wrong password", acc: acc[0]});
+                res.json({msg: "Wrong password", moksha_id: acc[0].moksha_id});
             }
         });
     },
@@ -66,13 +66,13 @@ var users = {
         if(res.locals.acc.is_admin)
             return next();
         else
-            res.json({msg: "You don't have permissions to view thisA", error: res.locals.acc});
+            res.json({msg: "You don't have permissions to view thisA", moksha_id: res.locals.acc.moksha_id});
     },
     isEM: function(req, res, next) {
         if(res.locals.acc.is_em || res.locals.acc.is_admin)
             return next();
         else
-            res.json({msg: "You don't have permissions to view thisEM", error: res.locals.acc});
+            res.json({msg: "You don't have permissions to view thisEM", moksha_id: res.locals.acc.moksha_id});
     },
     sendMail: function(to,subject,text,html,moksha_id,setsuc){
         var mailOpts;
