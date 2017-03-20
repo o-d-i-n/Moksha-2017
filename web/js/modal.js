@@ -1,13 +1,13 @@
-var ModalEffect = (function() {
+var ModalEffect = function() {
 
 	function init() {
 
 		var overlay = document.querySelector( '.modal-overlay' );
 
 		[].slice.call( document.querySelectorAll( '.modal-trigger' ) ).forEach( function( el, i ) {
+			var modal = document.querySelector( '#' + el.getAttribute( 'data-modal' ) );
 
-			var modal = document.querySelector( '#' + el.getAttribute( 'data-modal' ) ),
-				close = modal.querySelector( '.modal-close' );
+			var	close = modal.querySelectorAll( '.modal-close' );
 
 			function removeModal( hasPerspective ) {
 				classie.remove( modal, 'modal-show' );
@@ -19,9 +19,11 @@ var ModalEffect = (function() {
 				overlay.addEventListener( 'click', removeModal );
 			});
 
-			close.addEventListener( 'click', function( ev ) {
-				ev.stopPropagation();
-				removeModal();
+			close.forEach(function(node) {
+				node.addEventListener( 'click', function( ev ) {
+					ev.stopPropagation();
+					removeModal();
+				});
 			});
 
 		} );
@@ -30,4 +32,4 @@ var ModalEffect = (function() {
 
 	init();
 
-})();
+};

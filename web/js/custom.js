@@ -29,6 +29,8 @@ var engToGreek = {
 
 var storage = window.localStorage;
 
+handleSession();
+
 function getUserCredentials() {
   return {
     moksha_id: storage.getItem('nsit-moksha-2017_mokshaID'),
@@ -76,7 +78,7 @@ $('#content-canvas>div[data-tab="about"]').fadeIn();
 
 
 function validateEmail (emailField) {
-        var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+        var reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
         if (reg.test(emailField.value) == false)
         { $("#emailid").removeClass('trans-border');
@@ -137,6 +139,9 @@ function register() {
     success: function(r) {
       console.log(r);
       $('#register-for-moksha').html('Register');
+      if (!r.error) {
+        alert('Successfully Registered! Please check your mail...');
+      }
     },
     error: function(e) {
       console.log(e);
@@ -212,4 +217,123 @@ function login() {
      });
 }());
 
-handleSession();
+
+// var ModalEffect = function() {
+//
+// 	function init() {
+//
+// 		var overlay = document.querySelector( '.modal-overlay' );
+//
+// 		[].slice.call( document.querySelectorAll( '.modal-trigger' ) ).forEach( function( el, i ) {
+//
+// 			var modal = document.querySelector( '#' + el.getAttribute( 'data-modal' ) ),
+// 				close = modal.querySelectorAll( '.modal-close' );
+//
+// 			function removeModal( hasPerspective ) {
+// 				classie.remove( modal, 'modal-show' );
+// 			}
+//
+// 			el.addEventListener( 'click', function( ev ) {
+// 				classie.add( modal, 'modal-show' );
+// 				overlay.removeEventListener( 'click', removeModal );
+// 				overlay.addEventListener( 'click', removeModal );
+// 			});
+//
+// 			close.forEach(function(node) {
+// 				node.addEventListener( 'click', function( ev ) {
+// 					ev.stopPropagation();
+// 					removeModal();
+// 				});
+// 			});
+//
+// 		} );
+//
+// 	}
+//
+// 	init();
+//
+// };
+
+function getEvents() {
+  $.ajax({
+    url: '/events',
+    type: 'get',
+    dataType: 'json',
+    success: function(r) {
+      var eventString = r.events
+        .map(function(event) {
+          event.linkName = event.linkName.split('.').join('');
+          if (event.fbLink === "http://") {
+            return (`
+              <div class="event-tile modal-trigger" data-modal="modal-${event.linkName}">
+                <div class="event-image-div">
+                  <img class="event-image" src="img/relatedposts/HeaderEffects.jpg"/>
+                </div>
+                <h3>${event.name}</h3>
+              </div>
+              <div class="modal modal-effect-fade" id="modal-${event.linkName}">
+                <div class="modal-content">
+                  <div class="modal-heading-div">
+                    <div class="modal-heading">${event.name}</div>
+                    <div class="modal-close">X</div>
+                  </div>
+                  <div>
+                    <p>${event.details}</p>
+                    <ul>
+                      <li><strong>Timing:</strong> ${event.timings}</li>
+                      <li><strong>Total Team Members Limit:</strong> ${event.maxParticipants}</li>
+                      <li><strong>Contact:</strong> ${event.contact}</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            `);
+          } else {
+            return (`
+              <div class="event-tile modal-trigger" data-modal="modal-${event.linkName}">
+                <div class="event-image-div">
+                  <img class="event-image" src="img/relatedposts/HeaderEffects.jpg"/>
+                </div>
+                <h3>${event.name}</h3>
+              </div>
+              <div class="modal modal-effect-fade" id="modal-${event.linkName}">
+                <div class="modal-content">
+                  <div class="modal-heading-div">
+                    <div class="modal-heading">${event.name}</div>
+                    <div class="modal-close">X</div>
+                  </div>
+                  <div>
+                    <p>${event.details}</p>
+                    <ul>
+                      <li><strong>Timing:</strong> ${event.timings}</li>
+                      <li><strong>Total Team Members Limit:</strong> ${event.maxParticipants}</li>
+                      <li><strong>Contact:</strong> ${event.contact}</li>
+                      <li><strong>Register:</strong> ${event.fbLink}</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            `);
+          }
+
+        })
+        .join('');
+
+        if (eventString != '') {
+          eventString += '<div class="modal-overlay"></div>';
+        } else {
+          eventString = '<div style="margin: auto;">Updating Soon!</div>';
+        }
+
+
+        $('.events-container').empty().append(eventString);
+
+        ModalEffect();
+    },
+    error: function(e) {
+      console.log(e);
+    }
+  });
+}
+
+getEvents();

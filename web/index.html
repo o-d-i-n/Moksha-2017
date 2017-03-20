@@ -4,11 +4,11 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Initial Page Loading Effect</title>
+		<title>Moksha | 2017</title>
 		<meta name="description" content="Initial Page Loading Effect: Re-creating the effect seen on fontface.ninja" />
 		<meta name="keywords" content="page loading, effect, initial, logo, sliding, web design, css animation, transform" />
 		<meta name="author" content="Codrops" />
-		<link rel="shortcut icon" href="../favicon.ico">
+		<!-- <link rel="shortcut icon" href="../favicon.ico"> -->
 		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
 		<link rel="stylesheet" type="text/css" href="css/demo.css" />
@@ -44,12 +44,12 @@
 					<a>Registration</a>
 					<a id="login-logout">Login</a>
 					<a>Events</a>
-					<a>Sponsors</a>
-					<a>Contact Us</a>
+					<!-- <a>Sponsors</a>
+					<a>Contact Us</a> -->
 				</nav>
 				<section id="content-canvas">
 					<div class="section-page" data-tab="about">
-						<h2>Attain Moksha With Lost Traditions.</h2>
+						<h2>Attain Moksha With Forgotten Cultures.</h2>
 						<p>Zeus showers his blessings in the form of thunder strikes. Hecate will embody the fest in her magic, Aphrodite will bring out the beauty of life, and Athena will renew a long lost wisdom. Apollo will sharpen the musical scales, and Dionysus will draw upon the drinks and revelry! Moksha will have a new meaning this year.</p>
 						<p>We invite you to the realm of Moksha to witness a myriad of mythological experiences. Mark your calendars for an exhilarating three days from 29th to 31st March.</p>
 					</div>
@@ -57,7 +57,7 @@
 						<form name="register-form">
 							<i class="material-icons">person</i><input type="text" required name="firstName" placeholder="Name"><br>
 							<i class="material-icons">school</i><input type="text" required name="college" placeholder="College"><br>
-							<i class="material-icons">email</i><input id="emailid" type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required title="a...z@a..z.in" name="email" placeholder="Email"  onkeyup="validateEmail(this);" ><br>
+							<i class="material-icons">email</i><input id="emailid" type="email" required name="email" placeholder="Email"  onkeyup="validateEmail(this);" ><br>
              	<i class="material-icons">phone</i><input  type="text" required name="phone_no" placeholder="Phone Number"><br>
             	<i class="material-icons" style="opacity:0">check</i><button type="submit" class="moksha-button" id="register-for-moksha" >Register</button>
 						</form>
@@ -71,7 +71,7 @@
 					</div>
 					<div class="section-page" data-tab="events">
 						<div class="events-container">
-								<div class="event-tile event-type">
+								<!-- <div class="event-tile event-type">
 									<div class="event-type-name">
 										MUSIC
 									</div>
@@ -85,15 +85,18 @@
 								<div class="modal modal-effect-fade" id="modal-instrumental">
 									<div class="modal-content">
 										<div class="modal-heading-div">
-											<div class="modal-heading">Instrumental music</div>
+											<div class="modal-heading">Event Name</div>
 											<div class="modal-close">X</div>
 										</div>
 										<div>
-											<p>This is a modal window. You can do the following things with it:</p>
+											<p>Description</p>
 											<ul>
-												<li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
-												<li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
-												<li><strong>Close:</strong> click on the button below to close the modal.</li>
+												<li><strong>Timing:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+												<li><strong>Date:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+												<li><strong>Venue:</strong> click on the button below to close the modal.</li>
+												<li><strong>Participants:</strong> click on the button below to close the modal.</li>
+												<li><strong>Contact:</strong> click on the button below to close the modal.</li>
+												<li><strong>Register:</strong> click on the button below to close the modal.</li>
 											</ul>
 											<button class="register">Register</button>
 										</div>
@@ -114,11 +117,14 @@
 										<div>
 											<p>This is a modal window. You can do the following things with it:</p>
 											<ul>
-												<li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
-												<li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
-												<li><strong>Close:</strong> click on the button below to close the modal.</li>
+												<li><strong>Timing:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+												<li><strong>Date:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+												<li><strong>Venue:</strong> click on the button below to close the modal.</li>
+												<li><strong>Participants:</strong> click on the button below to close the modal.</li>
+												<li><strong>Contact:</strong> click on the button below to close the modal.</li>
+												<li><strong>Register:</strong> click on the button below to close the modal.</li>
 											</ul>
-											<button class="register">Register</button>
+											<button class="register modal-trigger modal-close" data-modal="modal-instrumental">Register</button>
 										</div>
 									</div>
 								</div>
@@ -135,7 +141,7 @@
 									<h3>Solo</h3>
 								</div>
 								<div class="modal-overlay"></div>
-						</div>
+						</div> -->
 
 					</div>
 					<div class="section-page" data-tab="events">
@@ -156,7 +162,7 @@
 										<div class="modal-heading-div">
 											<div class="modal-heading">Instrumental music</div>
 											<div class="modal-close">X</div>
-										</div> 
+										</div>
 										<div>
 											<p>This is a modal window. You can do the following things with it:</p>
 											<ul>
@@ -179,7 +185,7 @@
 										<div class="modal-heading-div">
 											<div class="modal-heading">Instrumental music</div>
 											<div class="modal-close">X</div>
-										</div> 
+										</div>
 										<div>
 											<p>This is a modal window. You can do the following things with it:</p>
 											<ul>
@@ -221,7 +227,7 @@
 								</div>
 								<div class="modal-overlay"></div>
 						</div>
-						
+
 					</div>
 				</section>
 			</div>
@@ -229,11 +235,7 @@
 		<script src="js/classie.js"></script>
 		<script src="js/pathLoader.js"></script>
 		<script src="js/main.js"></script>
-		<script src="js/custom.js"></script>
 		<script src="js/modal.js"></script>
-<<<<<<< HEAD
-=======
-
->>>>>>> bc1ada4354ed0e9093a4b7575608f32c9e45ab1e
+		<script src="js/custom.js"></script>
 	</body>
 </html>

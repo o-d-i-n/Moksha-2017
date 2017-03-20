@@ -25,7 +25,9 @@ router.get('/category/:category', function (req, res) {
     });
 });
 
-router.post('/addEvent', userLogic.ensureAuthenticated, userLogic.isEM, upload.single('eventPhoto'), function(req, res) {
+//  userLogic.ensureAuthenticated, userLogic.isEM, upload.single('eventPhoto'),
+
+router.post('/addEvent', function(req, res) {
     var linkName = req.body.name;
     linkName = linkName.replace(/\s+/g, '-').toLowerCase();
 

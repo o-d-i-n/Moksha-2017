@@ -83,6 +83,7 @@
 .modal-content > div p {
 	margin: 0;
 	padding: 10px 0;
+	white-space: pre-wrap;
 }
 
 .modal-content > div ul {
@@ -124,7 +125,7 @@
 }
 .modal-close{
 	cursor:pointer;
-	padding:5px 0;
+	padding:10px 0;
 	width:10%;
 	color:#222;
 	font-size: 25px;
