@@ -217,43 +217,6 @@ function login() {
      });
 }());
 
-
-// var ModalEffect = function() {
-//
-// 	function init() {
-//
-// 		var overlay = document.querySelector( '.modal-overlay' );
-//
-// 		[].slice.call( document.querySelectorAll( '.modal-trigger' ) ).forEach( function( el, i ) {
-//
-// 			var modal = document.querySelector( '#' + el.getAttribute( 'data-modal' ) ),
-// 				close = modal.querySelectorAll( '.modal-close' );
-//
-// 			function removeModal( hasPerspective ) {
-// 				classie.remove( modal, 'modal-show' );
-// 			}
-//
-// 			el.addEventListener( 'click', function( ev ) {
-// 				classie.add( modal, 'modal-show' );
-// 				overlay.removeEventListener( 'click', removeModal );
-// 				overlay.addEventListener( 'click', removeModal );
-// 			});
-//
-// 			close.forEach(function(node) {
-// 				node.addEventListener( 'click', function( ev ) {
-// 					ev.stopPropagation();
-// 					removeModal();
-// 				});
-// 			});
-//
-// 		} );
-//
-// 	}
-//
-// 	init();
-//
-// };
-
 function getEvents() {
   $.ajax({
     url: '/events',
@@ -263,6 +226,7 @@ function getEvents() {
       var eventString = r.events
         .map(function(event) {
           event.linkName = event.linkName.split('.').join('');
+          event.linkName = event.linkName.split('\'').join('');
           if (event.fbLink === "http://") {
             return (`
               <div class="event-tile modal-trigger" data-modal="modal-${event.linkName}">

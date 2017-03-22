@@ -32,7 +32,7 @@ router.post('/addEvent', function(req, res) {
     linkName = linkName.replace(/\s+/g, '-').toLowerCase();
 
     var fbLink = req.body.fbLink;
-    if (fbLink.indexOf('http') == -1)
+    if (fbLink && fbLink.indexOf('http') == -1)
         fbLink = 'http://' + fbLink;
 
     var trimmedDetails = req.body.details.substr(0, 100);
@@ -54,7 +54,7 @@ router.post('/addEvent', function(req, res) {
         timings: req.body.timings
     });
 
-    console.log(req.file);
+    // console.log(req.file);
     if (req.file)
         event.photo = '/uploads/' + req.file.filename;
 
