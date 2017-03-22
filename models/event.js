@@ -11,8 +11,8 @@ var Event = new Schema({
     timings: String,
     venue: String,
     photo: String,
-    minParticipants: {type:Number, default:'1'},
-    maxParticipants: {type:Number, default:'1'},
+    minParticipants: {type:Number},
+    maxParticipants: {type:Number},
     isTeamEvent: {type:Boolean,default:false},
     category: [String],
     // In case of team events, participants and winners refer to team._id of teams

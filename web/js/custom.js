@@ -217,6 +217,28 @@ function login() {
      });
 }());
 
+function formatBullets(event) {
+  points = '';
+
+  if (event.timings) {
+    points += '<li><strong>Timing:</strong> ' + event.timings + '</li>';
+  }
+  if (event.minParticipants) {
+    points += '<li><strong>Maximum Team Members:</strong> ' + event.minParticipants + '</li>';
+  }
+  if (event.maxParticipants) {
+    points += '<li><strong>Minimum Team Members:</strong> ' + event.maxParticipants + '</li>';
+  }
+  if (event.contact) {
+    points += '<li><strong>Contact:</strong> ' + event.contact + '</li>';
+  }
+  if (event.fbLink) {
+    points += '<li><strong>Register:</strong> <a href="' + event.fbLink + '" target="_blank" rel="noopener">Here</a></li>';
+  }
+
+  return points;
+}
+
 function getEvents() {
   $.ajax({
     url: '/events',
@@ -227,59 +249,28 @@ function getEvents() {
         .map(function(event) {
           event.linkName = event.linkName.split('.').join('');
           event.linkName = event.linkName.split('\'').join('');
-          if (event.fbLink === "http://") {
-            return (`
-              <div class="event-tile modal-trigger" data-modal="modal-${event.linkName}">
-                <div class="event-image-div">
-                  <img class="event-image" src="img/relatedposts/HeaderEffects.jpg"/>
-                </div>
-                <h3>${event.name}</h3>
+          return (`
+            <div class="event-tile modal-trigger" data-modal="modal-${event.linkName}">
+              <div class="event-image-div">
+                <img class="event-image" src="img/relatedposts/HeaderEffects.jpg"/>
               </div>
-              <div class="modal modal-effect-fade" id="modal-${event.linkName}">
-                <div class="modal-content">
-                  <div class="modal-heading-div">
-                    <div class="modal-heading">${event.name}</div>
-                    <div class="modal-close">X</div>
-                  </div>
-                  <div>
-                    <p>${event.details}</p>
-                    <ul>
-                      <li><strong>Timing:</strong> ${event.timings}</li>
-                      <li><strong>Total Team Members Limit:</strong> ${event.maxParticipants}</li>
-                      <li><strong>Contact:</strong> ${event.contact}</li>
-                    </ul>
-                  </div>
+              <h3>${event.name.toUpperCase()}</h3>
+            </div>
+            <div class="modal modal-effect-fade" id="modal-${event.linkName}">
+              <div class="modal-content">
+                <div class="modal-heading-div">
+                  <div class="modal-heading">${event.name.toUpperCase()}</div>
+                  <div class="modal-close">X</div>
+                </div>
+                <div>
+                  <p>${event.details}</p>
+                  <ul>
+                    ${formatBullets(event)}
+                  </ul>
                 </div>
               </div>
-            `);
-          } else {
-            return (`
-              <div class="event-tile modal-trigger" data-modal="modal-${event.linkName}">
-                <div class="event-image-div">
-                  <img class="event-image" src="img/relatedposts/HeaderEffects.jpg"/>
-                </div>
-                <h3>${event.name}</h3>
-              </div>
-              <div class="modal modal-effect-fade" id="modal-${event.linkName}">
-                <div class="modal-content">
-                  <div class="modal-heading-div">
-                    <div class="modal-heading">${event.name}</div>
-                    <div class="modal-close">X</div>
-                  </div>
-                  <div>
-                    <p>${event.details}</p>
-                    <ul>
-                      <li><strong>Timing:</strong> ${event.timings}</li>
-                      <li><strong>Total Team Members Limit:</strong> ${event.maxParticipants}</li>
-                      <li><strong>Contact:</strong> ${event.contact}</li>
-                      <li><strong>Register:</strong> ${event.fbLink}</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            `);
-          }
-
+            </div>
+          `);
         })
         .join('');
 
