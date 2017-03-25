@@ -249,10 +249,13 @@ function getEvents() {
         .map(function(event) {
           event.linkName = event.linkName.split('.').join('');
           event.linkName = event.linkName.split('\'').join('');
+          if (event.linkName.indexOf('resplendent') != -1) {
+            event.linkName = 'resplendent';
+          }
           return (`
             <div class="event-tile modal-trigger" data-modal="modal-${event.linkName}">
               <div class="event-image-div">
-                <img class="event-image" src="img/relatedposts/HeaderEffects.jpg"/>
+                <img class="event-image" src="img/relatedposts/${event.linkName}.jpg"/>
               </div>
               <h3>${event.name.toUpperCase()}</h3>
             </div>
