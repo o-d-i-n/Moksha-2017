@@ -27,46 +27,46 @@ router.get('/category/:category', function (req, res) {
 
 //  userLogic.ensureAuthenticated, userLogic.isEM, upload.single('eventPhoto'),
 
-router.post('/addEvent', function(req, res) {
-    var linkName = req.body.name;
-    linkName = linkName.replace(/\s+/g, '-').toLowerCase();
-
-    var fbLink = req.body.fbLink;
-    if (fbLink && fbLink.indexOf('http') == -1)
-        fbLink = 'http://' + fbLink;
-
-    var trimmedDetails = req.body.details.substr(0, 100);
-    trimmedDetails = trimmedDetails.substr(0, Math.min(trimmedDetails.length, trimmedDetails.lastIndexOf(" ")));
-    trimmedDetails = trimmedDetails + '...';
-
-    event = new Event({
-        name: req.body.name,
-        linkName: linkName,
-        shortDetails: trimmedDetails,
-        details: req.body.details,
-        fbLink: fbLink,
-        minParticipants: req.body.minParticipants,
-        maxParticipants: req.body.maxParticipants,
-        category: req.body.category,
-        isTeamEvent: req.body.isTeamEvent == 1,
-        contact: req.body.contact,
-        venue: req.body.venue,
-        timings: req.body.timings
-    });
-
-    // console.log(req.file);
-    if (req.file)
-        event.photo = '/uploads/' + req.file.filename;
-
-    event.save(function (err, event) {
-        if(err) {
-            console.log(err);
-            res.json({msg: 'Failure'});
-        }
-        else
-            res.json({event: event.linkName, msg: 'Success'});
-    });
-});
+// router.post('/addEvent', function(req, res) {
+//     var linkName = req.body.name;
+//     linkName = linkName.replace(/\s+/g, '-').toLowerCase();
+//
+//     var fbLink = req.body.fbLink;
+//     if (fbLink && fbLink.indexOf('http') == -1)
+//         fbLink = 'http://' + fbLink;
+//
+//     var trimmedDetails = req.body.details.substr(0, 100);
+//     trimmedDetails = trimmedDetails.substr(0, Math.min(trimmedDetails.length, trimmedDetails.lastIndexOf(" ")));
+//     trimmedDetails = trimmedDetails + '...';
+//
+//     event = new Event({
+//         name: req.body.name,
+//         linkName: linkName,
+//         shortDetails: trimmedDetails,
+//         details: req.body.details,
+//         fbLink: fbLink,
+//         minParticipants: req.body.minParticipants,
+//         maxParticipants: req.body.maxParticipants,
+//         category: req.body.category,
+//         isTeamEvent: req.body.isTeamEvent == 1,
+//         contact: req.body.contact,
+//         venue: req.body.venue,
+//         timings: req.body.timings
+//     });
+//
+//     // console.log(req.file);
+//     if (req.file)
+//         event.photo = '/uploads/' + req.file.filename;
+//
+//     event.save(function (err, event) {
+//         if(err) {
+//             console.log(err);
+//             res.json({msg: 'Failure'});
+//         }
+//         else
+//             res.json({event: event.linkName, msg: 'Success'});
+//     });
+// });
 
 router.get('/:eventLink', function (req, res) {
     Event.findOne({linkName: req.params.eventLink},
