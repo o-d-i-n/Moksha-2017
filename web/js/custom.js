@@ -255,7 +255,7 @@ function getEvents() {
           return (`
             <div class="event-tile modal-trigger" data-modal="modal-${event.linkName}">
               <div class="event-image-div">
-                <img class="event-image" src="img/relatedposts/${event.linkName}.jpg?v=1"/>
+                <img class="event-image" src="img/relatedposts/${event.linkName}.jpg?v=2"/>
               </div>
               <h3>${event.name.toUpperCase()}</h3>
             </div>
